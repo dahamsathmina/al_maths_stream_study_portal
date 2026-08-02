@@ -415,13 +415,27 @@
     }
 
     .footer-logo {
-      height: 30px;
+      height: 25px;
       width: auto;
       padding-right: 10px;
       object-fit: contain;
       background: transparent;
+      filter: drop-shadow(0 0 22px rgba(255, 255, 255, 0.88));
       border: none;
     }
+    /*
+    .footer-logo {
+  width: 90px;
+  animation: logoPulse 2s infinite alternate ease-in-out; 
+}
+
+@keyframes logoPulse {
+  100% {
+    filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.5))
+    drop-shadow(0 0 30px rgba(255, 255, 255, 0.80));
+  }
+}
+ */
 
     .footer-right {
       display: flex;
