@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A/L Chemistry — Master Reference</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,400;0,600;0,800;1,400;1,800&family=Noto+Sans+Sinhala:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06090e;
+      --surface: #0b0f17;
+      --card: #101622;
+      --card-hover: #162032;
+      --border: rgba(255,255,255,0.08);
+      --border-bright: rgba(255,255,255,0.15);
+      --purple: #a855f7;
+      --purple-glow: rgba(168,85,247,0.35);
+      --cyan: #06b6d4;
+      --cyan-glow: rgba(6,182,212,0.25);
+      --pink: #ec4899;
+      --pink-glow: rgba(236,72,153,0.25);
+      --text: #f8fafc;
+      --muted: #64748b;
+      --dim: #334155;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Sinhala', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── ANIMATED BACKGROUND ── */
+    .bg-layer {
+      position: fixed; inset: 0; z-index: -1; overflow: hidden;
+      background:
+        radial-gradient(ellipse 70% 50% at 0% 30%, rgba(168,85,247,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 80%, #04070d 0%, var(--bg) 70%),
+        var(--bg);
+    }
+    .grid-layer {
+      position: absolute; width: 200%; height: 200%;
+      top: -50%; left: -50%;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.018) 1px, transparent 1px);
+      background-size: 60px 60px;
+      transform: rotateX(55deg);
+      animation: grid-scroll 80s linear infinite;
+    }
+    @keyframes grid-scroll {
+      from { transform: rotateX(55deg) translateY(0); }
+      to   { transform: rotateX(55deg) translateY(60px); }
+    }
+    #chemCanvas { position: absolute; inset: 0; pointer-events: none; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 28px 80px; }
+
+    /* ── HEADER ── */
+    header {
+      padding: 80px 28px 64px;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: 'CHEMISTRY MASTER';
+      position: absolute;
+      right: -20px; top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(5rem, 13vw, 12rem);
+      font-weight: 900;
+      letter-spacing: -6px;
+      line-height: 1;
+      white-space: nowrap;
+      pointer-events: none;
+      background: linear-gradient(
+        to left,
+        rgba(255,255,255,0.055) 0%,
+        rgba(255,255,255,0.02) 50%,
+        rgba(255,255,255,0) 100%
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      user-select: none;
+      z-index: 0;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: linear-gradient(to bottom, transparent, var(--purple), transparent);
+    }
+
+    header > * { position: relative; z-index: 1; }
+
+    .header-label {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 10px; font-weight: 800;
+      letter-spacing: .45em; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .header-label::before {
+      content: '';
+      display: inline-block; width: 28px; height: 2px;
+      background: var(--purple); border-radius: 2px;
+    }
+    .header-label span { color: var(--purple); }
+
+    h1 {
+      font-size: clamp(3rem, 8.5vw, 7rem);
+      font-weight: 900;
+      font-style: normal;
+      letter-spacing: -4px;
+      line-height: 0.92;
+      margin-bottom: 6px;
+      color: #ffffff;
+    }
+    h1 .word-al {
+      display: block;
+      color: rgba(255,255,255,0.92);
+    }
+    h1 .word-chem {
+      display: block;
+      color: var(--purple);
+      text-shadow: 0 0 60px rgba(168,85,247,0.4);
+    }
+
+    .header-si {
+      font-family: 'Noto Sans Sinhala', sans-serif;
+      color: var(--muted); font-size: .95rem; margin: 18px 0 10px;
+    }
+    .header-sub {
+      font-size: .88rem; color: var(--muted); max-width: 520px;
+    }
+
+    /* ── STICKY NAV / PROGRESS ── */
+    .progress-nav {
+      position: sticky; top: 16px; z-index: 100;
+      margin-bottom: 48px;
+    }
+    .progress-bar-wrap {
+      background: rgba(6,9,14,0.88);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--border-bright);
+      border-radius: 18px;
+      padding: 20px 28px;
+      display: flex; align-items: center; gap: 20px;
+    }
+    .progress-label { flex-shrink: 0; }
+    .progress-label .tag {
+      font-size: 9px; font-weight: 800; letter-spacing: .4em;
+      text-transform: uppercase; color: var(--purple);
+      display: block; margin-bottom: 4px;
+    }
+    #pText {
+      font-size: 2rem; font-weight: 800; font-style: italic;
+      letter-spacing: -2px; line-height: 1;
+    }
+    .bar-track {
+      flex: 1; height: 4px; background: var(--border-bright);
+      border-radius: 99px; overflow: hidden;
+    }
+    #pFill {
+      height: 100%; width: 0%;
+      background: var(--purple);
+      box-shadow: 0 0 16px var(--purple-glow);
+      border-radius: 99px;
+      transition: width 0.9s cubic-bezier(.23,1,.32,1);
+    }
+    .progress-counts { flex-shrink: 0; text-align: right; }
+    .progress-counts .checked-count { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+    .progress-counts .total-count { font-size: .75rem; color: var(--muted); }
+
+    /* ── STATS STRIP ── */
+    .stats-strip {
+      display: flex; flex-wrap: wrap; gap: 20px;
+      justify-content: center; margin-bottom: 60px;
+    }
+    .stat-box {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px 28px; text-align: center;
+      min-width: 140px;
+    }
+    .stat-val { font-size: 2rem; font-weight: 800; font-style: italic; letter-spacing: -2px; }
+    .stat-lbl { font-size: .72rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+    .stat-g12 .stat-val { color: var(--cyan); }
+    .stat-g13 .stat-val { color: var(--pink); }
+    .stat-total .stat-val { color: var(--purple); }
+
+    /* ── TAB SWITCHER ── */
+    .tab-switcher {
+      display: flex; gap: 10px; margin-bottom: 40px;
+      justify-content: center;
+    }
+    .tab-btn {
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--muted); padding: 10px 26px;
+      border-radius: 99px; cursor: pointer;
+      font-family: inherit; font-size: .85rem; font-weight: 700;
+      letter-spacing: .04em; transition: all .3s;
+    }
+    .tab-btn:hover { border-color: var(--border-bright); color: var(--text); }
+    .tab-btn.active-g12 { background: rgba(6,182,212,.1); border-color: var(--cyan); color: var(--cyan); }
+    .tab-btn.active-g13 { background: rgba(236,72,153,.1); border-color: var(--pink); color: var(--pink); }
+    .tab-btn.active-all { background: rgba(168,85,247,.1); border-color: var(--purple); color: var(--purple); }
+
+    /* ── SECTION HEADERS ── */
+    .section-block { margin-bottom: 56px; }
+    .section-block[data-grade="g12"] { --accent: var(--cyan); }
+    .section-block[data-grade="g13"] { --accent: var(--pink); }
+
+    .section-header {
+      display: flex; align-items: baseline; gap: 16px;
+      margin-bottom: 24px; padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .section-header::after {
+      content: ''; position: absolute; bottom: -1px; left: 0;
+      width: 60px; height: 2px;
+      background: var(--accent); border-radius: 2px;
+    }
+    .section-header h2 {
+      font-size: 1.8rem; font-weight: 800; font-style: italic;
+      color: var(--text); letter-spacing: -1px;
+    }
+    .section-header .si-label {
+      font-family: 'Noto Sans Sinhala', sans-serif;
+      font-size: .8rem; color: var(--muted);
+    }
+    .section-header .grade-badge {
+      margin-left: auto; font-size: .7rem; font-weight: 800;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: var(--accent); background: rgba(255,255,255,.04);
+      border: 1px solid var(--accent); padding: 4px 12px;
+      border-radius: 99px; white-space: nowrap;
+    }
+
+    /* ── UNIT GRID ── */
+    .group-label {
+      font-size: .7rem; font-weight: 800; letter-spacing: .35em;
+      text-transform: uppercase; color: var(--muted);
+      margin: 28px 0 12px;
+    }
+    .unit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+
+    /* ── UNIT CARD ── */
+    .unit-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      transition: all .3s cubic-bezier(.23,1,.32,1);
+      position: relative; overflow: hidden;
+    }
+    .unit-card::before {
+      content: ''; position: absolute;
+      left: 0; top: 0; bottom: 0; width: 3px;
+      background: var(--accent); border-radius: 3px 0 0 3px;
+      opacity: 0; transition: opacity .3s;
+    }
+    .unit-card:hover {
+      background: var(--card-hover);
+      border-color: rgba(255,255,255,0.12);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0,0,0,.4);
+    }
+    .unit-card:hover::before { opacity: 1; }
+    .unit-card.completed {
+      border-color: rgba(168,85,247,.15);
+      background: rgba(168,85,247,.03);
+    }
+    .unit-card.completed::before { opacity: 1; background: var(--purple); }
+
+    .card-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+
+    .cb {
+      appearance: none; flex-shrink: 0;
+      width: 20px; height: 20px; margin-top: 2px;
+      border: 1.5px solid var(--dim); border-radius: 5px;
+      cursor: pointer; position: relative; transition: all .25s;
+      background: transparent;
+    }
+    .cb:hover { border-color: var(--accent); }
+    .cb:checked {
+      background: var(--purple); border-color: var(--purple);
+      box-shadow: 0 0 12px rgba(168,85,247,.4);
+    }
+    .cb:checked::after {
+      content: ''; position: absolute;
+      left: 6px; top: 2px; width: 5px; height: 10px;
+      border: 2px solid #fff; border-top: none; border-left: none;
+      transform: rotate(45deg);
+    }
+
+    .card-info { flex: 1; }
+    .unit-num {
+      font-size: .68rem; font-weight: 700; letter-spacing: .2em;
+      color: var(--muted); margin-bottom: 3px;
+    }
+    .unit-en { font-size: 1rem; font-weight: 700; color: var(--text); line-height: 1.3; }
+    .unit-si {
+      font-family: 'Noto Sans Sinhala', sans-serif;
+      font-size: .8rem; color: var(--muted); margin-top: 2px;
+    }
+
+    .formula-box {
+      background: rgba(0,0,0,.35);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-family: var(--mono);
+      font-size: .78rem; color: #94a3b8;
+      white-space: pre-wrap; line-height: 1.55;
+    }
+    .formula-label {
+      font-size: .65rem; font-weight: 800; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 5px; display: block;
+    }
+
+    .section-block.hidden { display: none; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 32px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted); font-size: .85rem;
+    }
+    footer strong { color: var(--text); }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 99px; }
+
+    @media (max-width: 600px) {
+      h1 { letter-spacing: -2px; }
+      .unit-grid { grid-template-columns: 1fr; }
+      .progress-counts { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-layer">
+  <div class="grid-layer"></div>
+  <canvas id="chemCanvas"></canvas>
+</div>
+
+<div class="container">
+
+  <header>
+    <div class="header-label">G.C.E. Advanced Level &nbsp;·&nbsp; <span>Chemistry Master</span></div>
+    <h1>
+      <span class="word-al">ADVANCED LEVEL</span>
+      <span class="word-chem">CHEMISTRY MASTER</span>
+    </h1>
+    <p class="header-si">රසායන විද්‍යාව — සම්පූර්ණ විෂය නිර්දේශය</p>
+    <p class="header-sub">Bilingual master syllabus · General, Inorganic, Physical &amp; Organic Chemistry · 14 Core Units · 42 Modules</p>
+  </header>
+
+  <div class="stats-strip">
+    <div class="stat-box stat-g12">
+      <div class="stat-val" id="statG12">0/18</div>
+      <div class="stat-lbl">Grade 12 Modules</div>
+    </div>
+    <div class="stat-box stat-g13">
+      <div class="stat-val" id="statG13">0/24</div>
+      <div class="stat-lbl">Grade 13 Modules</div>
+    </div>
+    <div class="stat-box stat-total">
+      <div class="stat-val" id="statTotal">0/42</div>
+      <div class="stat-lbl">Total Chemistry Modules</div>
+    </div>
+  </div>
+
+  <div class="progress-nav">
+    <div class="progress-bar-wrap">
+      <div class="progress-label">
+        <span class="tag">Mastery</span>
+        <span id="pText">0%</span>
+      </div>
+      <div class="bar-track"><div id="pFill"></div></div>
+      <div class="progress-counts">
+        <div class="checked-count"><span id="cDone">0</span> done</div>
+        <div class="total-count">of 42 modules</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-switcher">
+    <button class="tab-btn active-all" data-tab="all">All Units</button>
+    <button class="tab-btn" data-tab="g12">Grade 12 Focus</button>
+    <button class="tab-btn" data-tab="g13">Grade 13 Focus</button>
+  </div>
+
+  <div class="section-block" data-grade="g12">
+    <div class="section-header">
+      <h2>General, Physical &amp; Inorganic Foundations</h2>
+      <span class="si-label">සාමාන්‍ය, භෞතික සහ අකාබනික රසායන පදනම</span>
+      <span class="grade-badge">Grade 12 Curriculum</span>
+    </div>
+
+    <div class="group-label">Unit 01: Atomic Structure &nbsp;|&nbsp; පරමාණුක ව්‍යුහය</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 01</div>
+            <div class="unit-en">Fundamental Particles &amp; Electromagnetic Radiation</div>
+            <div class="unit-si">මූලික අංශු සහ විද්‍යුත් චුම්බක විකිරණ</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">c = fλ  |  E = hf = hc / λ
+h = 6.626 × 10⁻³⁴ J s
+Protons, Neutrons, Electrons & Isotopes</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 02</div>
+            <div class="unit-en">Quantum Numbers &amp; Electronic Configurations</div>
+            <div class="unit-si">ක්වොන්ටම් අංක සහ ඉලෙක්ට්‍රෝන වින්‍යාසය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">n (principal), l (azimuthal), m_l (magnetic), m_s (spin)
+Aufbau Principle, Pauli Exclusion, Hund's Rule
+Config up to Z = 36 (Cr, Cu anomalies)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 03</div>
+            <div class="unit-en">Periodic Trends &amp; Ionization Energy</div>
+            <div class="unit-si">ආවර්තිතා ප්‍රවණතා සහ අයනීකරණ ශක්තිය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Atomic/Ionic Radii, Electronegativity, Electron Affinity
+1st, 2nd, 3rd IE trends across Period 3 & Group 2/17
+Discontinuities: Be-B, N-O</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 02: Structure and Bonding &nbsp;|&nbsp; ව්‍යුහය හා බන්ධන</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 04</div>
+            <div class="unit-en">Lewis Structures &amp; Formal Charge</div>
+            <div class="unit-si">ලුවිස් ව්‍යුහ සහ ධර්මතාවී ආරෝපණය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Formal Charge = V - N - (B / 2)
+Octet Rule exceptions (BF₃, SF₆, NO)
+Resonance Structures (CO₃²⁻, NO₃⁻)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 05</div>
+            <div class="unit-en">VSEPR Theory &amp; Molecular Geometry</div>
+            <div class="unit-si">VSEPR සිද්ධාන්තය සහ අණුක ජ්‍යාමිතිය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Electron Pair Repulsion: LP-LP > LP-BP > BP-BP
+Shapes: Linear, Trigonal Planar, Tetrahedral,
+Trigonal Bipyramidal, Octahedral & Hybridization (sp, sp², sp³)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 06</div>
+            <div class="unit-en">Intermolecular Forces &amp; Metallic Bonding</div>
+            <div class="unit-si">අන්තර්අණුක බල සහ ලෝහක බන්ධන</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Hydrogen Bonding (N, O, F)
+London Dispersion, Dipole-Dipole forces
+Ionic vs Covalent vs Metallic Latices</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 03: Chemical Calculations &nbsp;|&nbsp; රසායනික ගණනය කිරීම්</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 07</div>
+            <div class="unit-en">Stoichiometry &amp; Mole Concept</div>
+            <div class="unit-si">ස්ටොයිකියෝමිතිය සහ මවුල සංකල්පය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">n = m / M  |  N = n × N_A
+Concentration: c = n / V (mol dm⁻³)
+Empirical & Molecular Formula calculations</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 08</div>
+            <div class="unit-en">Volumetric Analysis (Titrations)</div>
+            <div class="unit-si">පරිමාමිතික විශ්ලේෂණය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Acid-Base Titrations, Redox Titrations (KMnO₄, I₂/Na₂S₂O₃)
+Standard solutions, Primary standards
+Back Titration & Percentage Purity</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 04: Gaseous State of Matter &nbsp;|&nbsp; පදාර්ථයේ වායු අවස්ථාව</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 09</div>
+            <div class="unit-en">Ideal Gas Laws &amp; Kinetic Theory</div>
+            <div class="unit-si">ආදර්ශ වායු නියම සහ චාලක රසායනය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">PV = nRT  |  R = 8.314 J K⁻¹ mol⁻¹
+Dalton's Law: P_total = P_A + P_B + ...
+Mole fraction: P_A = X_A × P_total</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 10</div>
+            <div class="unit-en">Real Gases &amp; Liquid State</div>
+            <div class="unit-si">තථ්‍ය වායු සහ ද්‍රව අවස්ථාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Deviations from Ideal behavior (High P, Low T)
+van der Waals Equation: (P + n²a/V²)(V - nb) = nRT
+Vapour Pressure, Boiling point & Surface Tension</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 05: Energetics (Thermodynamics) &nbsp;|&nbsp; ශක්ති විද්‍යාව</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 11</div>
+            <div class="unit-en">Enthalpy Changes &amp; Calorimetry</div>
+            <div class="unit-si">එන්ටැල්පි විපර්යාස සහ කැලරිමිතිය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">q = m c ΔT
+ΔH°_f (Formation), ΔH°_c (Combustion), ΔH°_neut (Neutralization)
+Exothermic (ΔH < 0) vs Endothermic (ΔH > 0)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 12</div>
+            <div class="unit-en">Hess's Law &amp; Born-Haber Cycles</div>
+            <div class="unit-si">හෙසගේ නියමය සහ බෝන්-හාබර් චක්‍ර</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Hess's Law: Total ΔH is independent of path
+Lattice Energy ΔH_lattice calculations
+Bond Dissociation Energy calculations</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 06: Chemistry of s, p, and d Block Elements &nbsp;|&nbsp; s, p, d ගොනු මූලද්‍රව්‍යවල රසායනය</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 13</div>
+            <div class="unit-en">s-Block Elements (Group 1 &amp; 2)</div>
+            <div class="unit-si">s-ගොනුවේ මූලද්‍රව්‍ය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Reactivity with O₂, H₂O, Acids, N₂
+Oxides, Hydroxides, Carbonates, Nitrates thermal stability
+Diagonal Relationship: Li-Mg, Be-Al</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 14</div>
+            <div class="unit-en">p-Block Elements (Group 13-17)</div>
+            <div class="unit-si">p-ගොනුවේ මූලද්‍රව්‍ය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Group 13 (Al), 14 (C, Si), 15 (N, P), 16 (O, S), 17 (Halogens)
+Inert Pair Effect (Pb, Bi, Tl)
+Oxoacids of N, P, S & Halogens, Ozone reactions</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 15</div>
+            <div class="unit-en">d-Block Elements &amp; Complex Ions</div>
+            <div class="unit-si">d-ගොනුවේ මූලද්‍රව්‍ය සහ සංකීර්ණ අයන</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Transition Elements (3d series: Sc to Zn)
+Variable Oxidation States, Catalytic properties, Colour
+Complexes: Coordination number, Ligands, IUPAC Naming</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 07: Basic Concepts of Organic Chemistry &nbsp;|&nbsp; කාබනික රසායනයේ මූලික සංකල්ප</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 16</div>
+            <div class="unit-en">IUPAC Nomenclature &amp; Functional Groups</div>
+            <div class="unit-si">IUPAC නාමකරණය සහ ක්‍රියාකාරී කාණ්ඩ</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Prefix + Root + Suffix
+Priority order of Functional Groups
+Alkanes, Alkenes, Alkynes, Alcohols, Carbonyls, Carboxylic Acids</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 17</div>
+            <div class="unit-en">Isomerism (Structural &amp; Stereoisomerism)</div>
+            <div class="unit-si">සමාවයවිකතාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Structural: Chain, Positional, Functional Group
+Stereoisomerism: Geometrical (cis/trans, E/Z)
+Optical Isomerism: Chiral center, Enantiomers</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 18</div>
+            <div class="unit-en">Organic Reaction Mechanisms &amp; Reagents</div>
+            <div class="unit-si">කාබනික ප්‍රතික්‍රියා යාන්ත්‍රණ</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Electrophiles vs Nucleophiles vs Free Radicals
+Homolytic & Heterolytic Cleavage
+Inductive effect (+I, -I) & Resonance stability</div>
+      </div>
+    </div>
+
+  </div><div class="section-block" data-grade="g13">
+    <div class="section-header">
+      <h2>Advanced Organic, Physical &amp; Industrial Chemistry</h2>
+      <span class="si-label">උසස් කාබනික, භෞතික සහ කර්මාන්ත රසායනය</span>
+      <span class="grade-badge">Grade 13 Curriculum</span>
+    </div>
+
+    <div class="group-label">Unit 08: Hydrocarbons and Halogenoalkanes &nbsp;|&nbsp; හයිඩ්‍රෝකාබන හා හැලජන ඇල්කේන</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 19</div>
+            <div class="unit-en">Alkanes, Alkenes &amp; Alkynes</div>
+            <div class="unit-si">ඇල්කේන, ඇල්කීන හා ඇල්කයින</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Reaction</span>
+        <div class="formula-box">Free Radical Substitution of Alkanes
+Electrophilic Addition of Alkenes (Markovnikov's rule)
+Addition of HX, H₂O/H⁺, Br₂, Ozonolysis</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 20</div>
+            <div class="unit-en">Aromatic Hydrocarbons (Benzene)</div>
+            <div class="unit-si">ඇරෝමැටික හයිඩ්‍රෝකාබන (බෙන්සීන්)</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Reaction</span>
+        <div class="formula-box">Aromaticity & Delocalized π-cloud
+Electrophilic Aromatic Substitution: Nitration, Halogenation,
+Friedel-Crafts Alkylation & Acylation</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 21</div>
+            <div class="unit-en">Halogenoalkanes &amp; Grignard Reagents</div>
+            <div class="unit-si">හැලජන ඇල්කේන සහ ග්‍රිනියෝ ප්‍රකික්‍රියක</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Reaction</span>
+        <div class="formula-box">Nucleophilic Substitution: S_N1 vs S_N2 mechanism
+Elimination reactions (E1, E2)
+Grignard Reagents (RMgX) preparation & synthetic uses</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 09: Oxygen-Containing Compounds &nbsp;|&nbsp; ඔක්සිජන් අඩංගු කාබනික සංයෝග</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 22</div>
+            <div class="unit-en">Alcohols &amp; Phenols</div>
+            <div class="unit-si">ඇල්කොහොල සහ ෆීනෝල</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Reaction</span>
+        <div class="formula-box">Primary, Secondary, Tertiary Alcohols oxidation (K₂Cr₂O₇/H⁺)
+Lucas Test (ZnCl₂ / HCl)
+Acidity comparison: Phenol vs Alcohol vs Water</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 23</div>
+            <div class="unit-en">Aldehydes &amp; Ketones</div>
+            <div class="unit-si">ඇල්ඩිහයිඩ සහ කීටෝන</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Reaction</span>
+        <div class="formula-box">Nucleophilic Addition reactions (HCN, NaHSO₃, 2,4-DNP)
+Tollens' Test (Silver Mirror), Fehling's Test
+Iodoform Test (I₂ / NaOH)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 24</div>
+            <div class="unit-en">Carboxylic Acids &amp; Derivatives</div>
+            <div class="unit-si">කාබොක්සිලික් අම්ල සහ ව්‍යුත්පන්න</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Reaction</span>
+        <div class="formula-box">Acidity & Resonance stabilization of Carboxylate ion
+Acid Chlorides, Acid Anhydrides, Esters, Amides
+Esterification & Hydrolysis (Acidic vs Basic)</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 10: Nitrogen-Containing Compounds &nbsp;|&nbsp; නයිට්‍රජන් අඩංගු කාබනික සංයෝග</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 25</div>
+            <div class="unit-en">Amines &amp; Basicity Trends</div>
+            <div class="unit-si">ඇමීන සහ භාෂ්මිකතා ප්‍රවණතා</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Reaction</span>
+        <div class="formula-box">1°, 2°, 3° Aliphatic Amines vs Aniline
+Basicity order: Aliphatic amine > Ammonia > Aniline
+Reaction with HNO₂ (Nitrous acid)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 26</div>
+            <div class="unit-en">Diazo Compounds &amp; Synthetic Pathways</div>
+            <div class="unit-si">ඩයසෝ සංයෝග සහ සංස්ලේෂණ මාර්ග</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Reaction</span>
+        <div class="formula-box">Diazotization of Aniline (0-5 °C)
+Benzene Diazonium Chloride reactions (CuCl, CuBr, KI, H₂O)
+Azo Coupling reactions (Dyes)</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 11: Chemical Kinetics &nbsp;|&nbsp; රසායනික චාලක විද්‍යාව</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 27</div>
+            <div class="unit-en">Reaction Rate &amp; Rate Laws</div>
+            <div class="unit-si">ප්‍රතික්‍රියා ශීඝ්‍රතාව සහ ශීඝ්‍රතා නියම</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Rate = k [A]^m [B]^n
+Overall Order = m + n
+Initial Rate Method & Graphical analysis</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 28</div>
+            <div class="unit-en">Activation Energy &amp; Catalysis</div>
+            <div class="unit-si">සක්‍රියන ශක්තිය සහ උත්ප්‍රේරණය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Arrhenius Equation: k = A e^(-Ea / RT)
+Collision Theory & Transition State
+Homogeneous vs Heterogeneous Catalysts</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 12: Chemical Equilibrium &nbsp;|&nbsp; රසායනික සමතුලිතතාවය</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 29</div>
+            <div class="unit-en">Dynamic Equilibrium (Kc &amp; Kp)</div>
+            <div class="unit-si">ගතික සමතුලිතතාවය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">K_c = [C]^c [D]^d / ([A]^a [B]^b)
+K_p = K_c (RT)^(Δn)
+Le Chatelier's Principle (P, T, Concentration effect)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 30</div>
+            <div class="unit-en">Ionic Equilibrium &amp; pH Calculations</div>
+            <div class="unit-si">අයනික සමතුලිතතාවය සහ pH ගණනය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">K_w = [H⁺][OH⁻] = 1.0 × 10⁻¹⁴ mol² dm⁻⁶
+pH = -log[H⁺]  |  pOH = -log[OH⁻]
+Weak Acid/Base Dissociation: K_a, K_b</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 31</div>
+            <div class="unit-en">Buffer Solutions &amp; Hydrolysis</div>
+            <div class="unit-si">අමුද්‍රව්‍ය ද්‍රාවණ (Buffer) සහ ජලවිච්ඡේදනය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Acidic Buffer: pH = pK_a + log([Salt]/[Acid])
+Basic Buffer: pOH = pK_b + log([Salt]/[Base])
+Salt Hydrolysis & Indicator action (HIn)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 32</div>
+            <div class="unit-en">Solubility Product (Ksp)</div>
+            <div class="unit-si">ද්‍රාව්‍යතා ගුණිතය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">K_sp = [Aⁿ⁺]ᵐ [Bᵐ⁻]ⁿ
+Ionic Product Q_sp vs K_sp (Precipitation condition)
+Common Ion Effect & Selective Precipitation</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 33</div>
+            <div class="unit-en">Phase Equilibrium &amp; Liquid Mixtures</div>
+            <div class="unit-si">කලාප සමතුලිතතාවය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Raoult's Law: P_A = X_A × P°_A
+Ideal vs Non-Ideal Solutions (Azeotropes)
+Steam Distillation & Partition Coefficient K_D</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 13: Electrochemistry &nbsp;|&nbsp; විද්‍යුත් රසායනය</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 34</div>
+            <div class="unit-en">Conductivity &amp; Electrolysis</div>
+            <div class="unit-si">වාහකතාව සහ විද්‍යුත් විච්ඡේදනය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Molar Conductivity Λ_m = κ / c
+Faraday's Laws: Q = I t  |  m = M Q / (z F)
+F = 96485 C mol⁻¹</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 35</div>
+            <div class="unit-en">Electrochemical Cells (Galvanic)</div>
+            <div class="unit-si">ගැල්වානි කෝෂ</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Standard Hydrogen Electrode (SHE = 0.00 V)
+E°_cell = E°_cathode - E°_anode
+Feasibility of redox reaction (E°_cell > 0)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 36</div>
+            <div class="unit-en">Commercial Batteries &amp; Corrosion</div>
+            <div class="unit-si">වාණිජ කෝෂ සහ ලෝහ ඛාදනය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Primary vs Secondary Cells (Lead-acid, Li-ion, Fuel Cells)
+Mechanism of Rusting of Iron
+Corrosion Prevention: Cathodic Protection, Galvanizing</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 14: Industrial Chemistry &amp; Environment &nbsp;|&nbsp; කර්මාන්ත රසායනය සහ පාරිසරික දූෂණය</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 37</div>
+            <div class="unit-en">Extraction of Metals (Fe, Al, Mg)</div>
+            <div class="unit-si">ලෝහ නිස්සාරණය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Process</span>
+        <div class="formula-box">Iron Extraction (Blast Furnace reactions)
+Aluminum Extraction (Hall-Héroult process / Cryolite)
+Ellingham Diagrams principles</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 38</div>
+            <div class="unit-en">Chemical Industries in Sri Lanka</div>
+            <div class="unit-si">ශ්‍රී ලංකාවේ රසායනික කර්මාන්ත</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Process</span>
+        <div class="formula-box">Sulfuric Acid (Contact Process)
+Nitric Acid (Ostwald Process) & Ammonia (Haber)
+Soap & Detergents, Chlor-Alkali industry</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 39</div>
+            <div class="unit-en">Polymers &amp; Natural Products</div>
+            <div class="unit-si">බහුඅවයවික සහ ස්වාභාවික නිෂ්පාදන</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Process</span>
+        <div class="formula-box">Addition vs Condensation Polymers (PE, PVC, Nylon 6,6, Terylene)
+Natural Rubber (Isoprene) & Vulcanization
+Essential oils extraction</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 40</div>
+            <div class="unit-en">Atmospheric Chemistry &amp; Air Pollution</div>
+            <div class="unit-si">වායුගෝලීය රසායනය සහ වායු දූෂණය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Process</span>
+        <div class="formula-box">Photochemical Smog (O₃, PAN, NO_x)
+Acid Rain (SO₂, NO_x)
+Ozone Layer Depletion (CFCs catalytic cycles) & Greenhouse Effect</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 41</div>
+            <div class="unit-en">Water Pollution &amp; Treatment</div>
+            <div class="unit-si">ජල දූෂණය සහ පිරිපහදුව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Process</span>
+        <div class="formula-box">Dissolved Oxygen (DO), BOD, COD
+Eutrophication (Nitrates & Phosphates)
+Water Purification Steps & Hardness Removal</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 42</div>
+            <div class="unit-en">Green Chemistry &amp; Sustainable Future</div>
+            <div class="unit-si">හරිත රසායන විද්‍යාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Process</span>
+        <div class="formula-box">12 Principles of Green Chemistry
+Atom Economy calculation
+Waste prevention & Renewable Feedstocks</div>
+      </div>
+    </div>
+
+  </div><footer>
+    <strong>A/L Chemistry — Master Reference Portal</strong><br>
+    Physical Science & Bio Science Stream · 14 Units · 42 Core Modules · General, Inorganic, Organic &amp; Physical
+  </footer>
+
+</div>
+
+<script>
+  /* ── CANVAS MOLECULAR ANIMATION ── */
+  const canvas = document.getElementById('chemCanvas');
+  const ctx = canvas.getContext('2d');
+  const symbols = ['H','C','O','N','S','Cl','Fe','ΔH','pH','Ka','Kc','[H+]','sp³','R-OH','R-COOH'];
+  let W, H, particles = [];
+
+  function initCanvas() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    particles = Array.from({length: 45}, () => ({
+      x: Math.random()*W, y: Math.random()*H,
+      s: symbols[Math.floor(Math.random()*symbols.length)],
+      vx: (Math.random()-.5)*.25,
+      vy: (Math.random()-.5)*.25,
+      op: Math.random()*.12 + .04,
+      size: Math.random()*6 + 11
+    }));
+  }
+
+  function drawCanvas() {
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p => {
+      ctx.font = `${p.size}px JetBrains Mono, monospace`;
+      ctx.fillStyle = `rgba(168,85,247,${p.op})`;
+      ctx.fillText(p.s, p.x, p.y);
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < -40 || p.x > W+40) p.vx *= -1;
+      if(p.y < -40 || p.y > H+40) p.vy *= -1;
+    });
+    requestAnimationFrame(drawCanvas);
+  }
+
+  window.addEventListener('resize', initCanvas);
+  initCanvas(); drawCanvas();
+
+  /* ── PROGRESS TRACKER ── */
+  function updateProgress() {
+    const allTasks = document.querySelectorAll('.task');
+    const g12Tasks  = document.querySelectorAll('.task[data-grade="g12"]');
+    const g13Tasks  = document.querySelectorAll('.task[data-grade="g13"]');
+
+    const total     = allTasks.length;
+    const done      = [...allTasks].filter(t => t.checked).length;
+    const g12Done   = [...g12Tasks].filter(t => t.checked).length;
+    const g13Done   = [...g13Tasks].filter(t => t.checked).length;
+    const pct       = Math.round((done / total) * 100) || 0;
+
+    document.getElementById('pFill').style.width = pct + '%';
+    document.getElementById('pText').textContent = pct + '%';
+    document.getElementById('cDone').textContent = done;
+    document.getElementById('statG12').textContent   = `${g12Done}/${g12Tasks.length}`;
+    document.getElementById('statG13').textContent   = `${g13Done}/${g13Tasks.length}`;
+    document.getElementById('statTotal').textContent = `${done}/${total}`;
+
+    document.querySelectorAll('.task').forEach(cb => {
+      cb.closest('.unit-card').classList.toggle('completed', cb.checked);
+    });
+
+    const state = [...allTasks].map(t => t.checked);
+    try { localStorage.setItem('chem_progress', JSON.stringify(state)); } catch(e){}
+  }
+
+  try {
+    const saved = JSON.parse(localStorage.getItem('chem_progress') || '[]');
+    document.querySelectorAll('.task').forEach((cb, i) => {
+      if(saved[i]) cb.checked = true;
+    });
+  } catch(e){}
+
+  document.querySelectorAll('.task').forEach(cb => cb.addEventListener('change', updateProgress));
+  updateProgress();
+
+  /* ── TAB SWITCHER ── */
+  const tabs   = document.querySelectorAll('.tab-btn');
+  const blocks = document.querySelectorAll('.section-block');
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(b => b.className = 'tab-btn');
+      const tab = btn.dataset.tab;
+      if(tab === 'all') btn.classList.add('active-all');
+      if(tab === 'g12') btn.classList.add('active-g12');
+      if(tab === 'g13') btn.classList.add('active-g13');
+
+      blocks.forEach(bl => {
+        if(tab === 'all') bl.classList.remove('hidden');
+        else bl.classList.toggle('hidden', bl.dataset.grade !== tab);
+      });
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A/L Information Technology — Master Reference</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,400;0,600;0,800;1,400;1,800&family=Noto+Sans+Sinhala:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06090e;
+      --surface: #0b0f17;
+      --card: #101622;
+      --card-hover: #162032;
+      --border: rgba(255,255,255,0.08);
+      --border-bright: rgba(255,255,255,0.15);
+      
+      /* Chemistry Theme Palette */
+      --purple: #a855f7;
+      --purple-glow: rgba(168,85,247,0.35);
+      --cyan: #06b6d4;
+      --cyan-glow: rgba(6,182,212,0.25);
+      --pink: #ec4899;
+      --pink-glow: rgba(236,72,153,0.25);
+      
+      --text: #f8fafc;
+      --muted: #64748b;
+      --dim: #334155;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Sinhala', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── ANIMATED BACKGROUND ── */
+    .bg-layer {
+      position: fixed; inset: 0; z-index: -1; overflow: hidden;
+      background:
+        radial-gradient(ellipse 70% 50% at 0% 30%, rgba(168,85,247,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 80%, #04070d 0%, var(--bg) 70%),
+        var(--bg);
+    }
+    .grid-layer {
+      position: absolute; width: 200%; height: 200%;
+      top: -50%; left: -50%;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.018) 1px, transparent 1px);
+      background-size: 60px 60px;
+      transform: rotateX(55deg);
+      animation: grid-scroll 80s linear infinite;
+    }
+    @keyframes grid-scroll {
+      from { transform: rotateX(55deg) translateY(0); }
+      to   { transform: rotateX(55deg) translateY(60px); }
+    }
+    #ictCanvas { position: absolute; inset: 0; pointer-events: none; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 28px 80px; }
+
+    /* ── HEADER ── */
+    header {
+      padding: 80px 28px 64px;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: 'ICT MASTER';
+      position: absolute;
+      right: -20px; top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(5rem, 13vw, 12rem);
+      font-weight: 900;
+      letter-spacing: -6px;
+      line-height: 1;
+      white-space: nowrap;
+      pointer-events: none;
+      background: linear-gradient(
+        to left,
+        rgba(255,255,255,0.055) 0%,
+        rgba(255,255,255,0.02) 50%,
+        rgba(255,255,255,0) 100%
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      user-select: none;
+      z-index: 0;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: linear-gradient(to bottom, transparent, var(--purple), transparent);
+    }
+
+    header > * { position: relative; z-index: 1; }
+
+    .header-label {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 10px; font-weight: 800;
+      letter-spacing: .45em; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .header-label::before {
+      content: '';
+      display: inline-block; width: 28px; height: 2px;
+      background: var(--purple); border-radius: 2px;
+    }
+    .header-label span { color: var(--purple); }
+
+    h1 {
+      font-size: clamp(3rem, 8.5vw, 7rem);
+      font-weight: 900;
+      font-style: normal;
+      letter-spacing: -4px;
+      line-height: 0.92;
+      margin-bottom: 6px;
+      color: #ffffff;
+    }
+    h1 .word-al {
+      display: block;
+      color: rgba(255,255,255,0.92);
+    }
+    h1 .word-ict {
+      display: block;
+      color: var(--purple);
+      text-shadow: 0 0 60px rgba(168,85,247,0.4);
+    }
+
+    .header-si {
+      font-family: 'Noto Sans Sinhala', sans-serif;
+      color: var(--muted); font-size: .95rem; margin: 18px 0 10px;
+    }
+    .header-sub {
+      font-size: .88rem; color: var(--muted); max-width: 520px;
+    }
+
+    /* ── STICKY NAV / PROGRESS ── */
+    .progress-nav {
+      position: sticky; top: 16px; z-index: 100;
+      margin-bottom: 48px;
+    }
+    .progress-bar-wrap {
+      background: rgba(6,9,14,0.88);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--border-bright);
+      border-radius: 18px;
+      padding: 20px 28px;
+      display: flex; align-items: center; gap: 20px;
+    }
+    .progress-label { flex-shrink: 0; }
+    .progress-label .tag {
+      font-size: 9px; font-weight: 800; letter-spacing: .4em;
+      text-transform: uppercase; color: var(--purple);
+      display: block; margin-bottom: 4px;
+    }
+    #pText {
+      font-size: 2rem; font-weight: 800; font-style: italic;
+      letter-spacing: -2px; line-height: 1;
+    }
+    .bar-track {
+      flex: 1; height: 4px; background: var(--border-bright);
+      border-radius: 99px; overflow: hidden;
+    }
+    #pFill {
+      height: 100%; width: 0%;
+      background: var(--purple);
+      box-shadow: 0 0 16px var(--purple-glow);
+      border-radius: 99px;
+      transition: width 0.9s cubic-bezier(.23,1,.32,1);
+    }
+    .progress-counts { flex-shrink: 0; text-align: right; }
+    .progress-counts .checked-count { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+    .progress-counts .total-count { font-size: .75rem; color: var(--muted); }
+
+    /* ── STATS STRIP ── */
+    .stats-strip {
+      display: flex; flex-wrap: wrap; gap: 20px;
+      justify-content: center; margin-bottom: 60px;
+    }
+    .stat-box {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px 28px; text-align: center;
+      min-width: 140px;
+    }
+    .stat-val { font-size: 2rem; font-weight: 800; font-style: italic; letter-spacing: -2px; }
+    .stat-lbl { font-size: .72rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+    .stat-g12 .stat-val { color: var(--cyan); }
+    .stat-g13 .stat-val { color: var(--pink); }
+    .stat-total .stat-val { color: var(--purple); }
+
+    /* ── TAB SWITCHER ── */
+    .tab-switcher {
+      display: flex; gap: 10px; margin-bottom: 40px;
+      justify-content: center;
+    }
+    .tab-btn {
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--muted); padding: 10px 26px;
+      border-radius: 99px; cursor: pointer;
+      font-family: inherit; font-size: .85rem; font-weight: 700;
+      letter-spacing: .04em; transition: all .3s;
+    }
+    .tab-btn:hover { border-color: var(--border-bright); color: var(--text); }
+    .tab-btn.active-g12 { background: rgba(6,182,212,.1); border-color: var(--cyan); color: var(--cyan); }
+    .tab-btn.active-g13 { background: rgba(236,72,153,.1); border-color: var(--pink); color: var(--pink); }
+    .tab-btn.active-all { background: rgba(168,85,247,.1); border-color: var(--purple); color: var(--purple); }
+
+    /* ── SECTION HEADERS ── */
+    .section-block { margin-bottom: 56px; }
+    .section-block[data-grade="g12"] { --accent: var(--cyan); }
+    .section-block[data-grade="g13"] { --accent: var(--pink); }
+
+    .section-header {
+      display: flex; align-items: baseline; gap: 16px;
+      margin-bottom: 24px; padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .section-header::after {
+      content: ''; position: absolute; bottom: -1px; left: 0;
+      width: 60px; height: 2px;
+      background: var(--accent); border-radius: 2px;
+    }
+    .section-header h2 {
+      font-size: 1.8rem; font-weight: 800; font-style: italic;
+      color: var(--text); letter-spacing: -1px;
+    }
+    .section-header .si-label {
+      font-family: 'Noto Sans Sinhala', sans-serif;
+      font-size: .8rem; color: var(--muted);
+    }
+    .section-header .grade-badge {
+      margin-left: auto; font-size: .7rem; font-weight: 800;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: var(--accent); background: rgba(255,255,255,.04);
+      border: 1px solid var(--accent); padding: 4px 12px;
+      border-radius: 99px; white-space: nowrap;
+    }
+
+    /* ── UNIT GRID ── */
+    .group-label {
+      font-size: .7rem; font-weight: 800; letter-spacing: .35em;
+      text-transform: uppercase; color: var(--muted);
+      margin: 28px 0 12px;
+    }
+    .unit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+
+    /* ── UNIT CARD ── */
+    .unit-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      transition: all .3s cubic-bezier(.23,1,.32,1);
+      position: relative; overflow: hidden;
+    }
+    .unit-card::before {
+      content: ''; position: absolute;
+      left: 0; top: 0; bottom: 0; width: 3px;
+      background: var(--accent); border-radius: 3px 0 0 3px;
+      opacity: 0; transition: opacity .3s;
+    }
+    .unit-card:hover {
+      background: var(--card-hover);
+      border-color: rgba(255,255,255,0.12);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0,0,0,.4);
+    }
+    .unit-card:hover::before { opacity: 1; }
+    .unit-card.completed {
+      border-color: rgba(168,85,247,.15);
+      background: rgba(168,85,247,.03);
+    }
+    .unit-card.completed::before { opacity: 1; background: var(--purple); }
+
+    .card-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+
+    .cb {
+      appearance: none; flex-shrink: 0;
+      width: 20px; height: 20px; margin-top: 2px;
+      border: 1.5px solid var(--dim); border-radius: 5px;
+      cursor: pointer; position: relative; transition: all .25s;
+      background: transparent;
+    }
+    .cb:hover { border-color: var(--accent); }
+    .cb:checked {
+      background: var(--purple); border-color: var(--purple);
+      box-shadow: 0 0 12px rgba(168,85,247,.4);
+    }
+    .cb:checked::after {
+      content: ''; position: absolute;
+      left: 6px; top: 2px; width: 5px; height: 10px;
+      border: 2px solid #fff; border-top: none; border-left: none;
+      transform: rotate(45deg);
+    }
+
+    .card-info { flex: 1; }
+    .unit-num {
+      font-size: .68rem; font-weight: 700; letter-spacing: .2em;
+      color: var(--muted); margin-bottom: 3px;
+    }
+    .unit-en { font-size: 1rem; font-weight: 700; color: var(--text); line-height: 1.3; }
+    .unit-si {
+      font-family: 'Noto Sans Sinhala', sans-serif;
+      font-size: .8rem; color: var(--muted); margin-top: 2px;
+    }
+
+    .formula-box {
+      background: rgba(0,0,0,.35);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-family: var(--mono);
+      font-size: .78rem; color: #94a3b8;
+      white-space: pre-wrap; line-height: 1.55;
+    }
+    .formula-label {
+      font-size: .65rem; font-weight: 800; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 5px; display: block;
+    }
+
+    .section-block.hidden { display: none; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 32px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted); font-size: .85rem;
+    }
+    footer strong { color: var(--text); }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 99px; }
+
+    @media (max-width: 600px) {
+      h1 { letter-spacing: -2px; }
+      .unit-grid { grid-template-columns: 1fr; }
+      .progress-counts { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-layer">
+  <div class="grid-layer"></div>
+  <canvas id="ictCanvas"></canvas>
+</div>
+
+<div class="container">
+
+  <header>
+    <div class="header-label">G.C.E. Advanced Level &nbsp;·&nbsp; <span>Information Technology</span></div>
+    <h1>
+      <span class="word-al">ADVANCED LEVEL</span>
+      <span class="word-ict">IT MASTER</span>
+    </h1>
+    <p class="header-si">තොරතුරු හා සන්නිවේදන තාක්ෂණය — සම්පූර්ණ විෂය නිර්දේශය</p>
+    <p class="header-sub">Bilingual master syllabus · Systems, Programming, Hardware, Networking, Logic Gates, Databases, Python, Web &amp; IoT · 11 Units · 40 Modules</p>
+  </header>
+
+  <div class="stats-strip">
+    <div class="stat-box stat-g12">
+      <div class="stat-val" id="statG12">0/20</div>
+      <div class="stat-lbl">Grade 12 Modules</div>
+    </div>
+    <div class="stat-box stat-g13">
+      <div class="stat-val" id="statG13">0/20</div>
+      <div class="stat-lbl">Grade 13 Modules</div>
+    </div>
+    <div class="stat-box stat-total">
+      <div class="stat-val" id="statTotal">0/40</div>
+      <div class="stat-lbl">Total ICT Modules</div>
+    </div>
+  </div>
+
+  <div class="progress-nav">
+    <div class="progress-bar-wrap">
+      <div class="progress-label">
+        <span class="tag">Mastery</span>
+        <span id="pText">0%</span>
+      </div>
+      <div class="bar-track"><div id="pFill"></div></div>
+      <div class="progress-counts">
+        <div class="checked-count"><span id="cDone">0</span> done</div>
+        <div class="total-count">of 40 modules</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-switcher">
+    <button class="tab-btn active-all" data-tab="all">All Units</button>
+    <button class="tab-btn" data-tab="g12">Grade 12 Focus</button>
+    <button class="tab-btn" data-tab="g13">Grade 13 Focus</button>
+  </div>
+
+  <div class="section-block" data-grade="g12">
+    <div class="section-header">
+      <h2>Foundations of ICT, Data &amp; Systems Architecture</h2>
+      <span class="si-label">තොරතුරු තාක්ෂණ පදනම, දත්ත හා පද්ධති ගෘහනිර්මාණ ශිල්පය</span>
+      <span class="grade-badge">Grade 12 Curriculum</span>
+    </div>
+
+    <div class="group-label">Unit 01: Basic Concepts of ICT &nbsp;|&nbsp; තොරතුරු හා සන්නිවේදන තාක්ෂණයේ මූලික සංකල්ප</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 01</div>
+            <div class="unit-en">Data vs. Information &amp; System Characteristics</div>
+            <div class="unit-si">දත්ත, තොරතුරු සහ පද්ධති ලක්ෂණ</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Data Processing Cycle: Input -> Process -> Output -> Storage
+Information Quality: Accuracy, Relevancy, Timeliness
+Closed vs Open Systems</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 02</div>
+            <div class="unit-en">Evolution of Computers &amp; Classification</div>
+            <div class="unit-si">පරිගණක පරිණාමය සහ වර්ගීකරණය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">1st Gen (Vacuum Tubes) -> 2nd (Transistors) -> 3rd (ICs) -> 4th (VLSI/Microprocessors)
+Supercomputers, Mainframes, Minicomputers, Microcomputers</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 02: Data Representation in Computers &nbsp;|&nbsp; දත්ත නිරූපණය</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 03</div>
+            <div class="unit-en">Number Systems &amp; Conversions</div>
+            <div class="unit-si">සංඛ්‍යා පද්ධති සහ පරිවර්තන</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Decimal (Base 10), Binary (Base 2), Octal (Base 8), Hexadecimal (Base 16)
+Conversion between all bases (including fractional values)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 04</div>
+            <div class="unit-en">Signed Number Representation &amp; Arithmetic</div>
+            <div class="unit-si">ලකුණ සහිත සංඛ්‍යා සහ ගණිතමය මෙහෙයුම්</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Sign and Magnitude, 1's Complement, 2's Complement
+Range for n-bit signed integer: -2^(n-1) to +(2^(n-1) - 1)
+Binary addition & subtraction using 2's complement</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 05</div>
+            <div class="unit-en">Character Encoding Schemes</div>
+            <div class="unit-si">අක්ෂර කේතන ක්‍රම</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">ASCII (7-bit / 8-bit), EBCDIC, BCD
+Unicode (UTF-8, UTF-16, UTF-32 for international/Sinhala scripts)</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 03: Digital Logic Gates &amp; Circuits &nbsp;|&nbsp; ඩිජිටල් තර්ක ද්වාර සහ පරිපථ</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 06</div>
+            <div class="unit-en">Fundamental &amp; Universal Logic Gates</div>
+            <div class="unit-si">මූලික සහ විශ්ව තර්ක ද්වාර</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">AND, OR, NOT (Basic)
+NAND, NOR (Universal Gates)
+XOR, XNOR (Specialized Gates) & Truth Tables</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 07</div>
+            <div class="unit-en">Boolean Algebra &amp; De Morgan's Laws</div>
+            <div class="unit-si">බූලීය වීජ ගණිතය සහ ඩි මෝර්ගන් නියම</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">De Morgan's Laws:
+(A · B)' = A' + B'  |  (A + B)' = A' · B'
+Commutative, Associative, Distributive, Absorption laws</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 08</div>
+            <div class="unit-en">Karnaugh Maps (K-Maps) &amp; Simplification</div>
+            <div class="unit-si">කානෝ සිතියම් සහ සුළු කිරීම්</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Sum of Products (SOP) & Product of Sums (POS)
+K-Map simplification (2, 3, 4 variable grouping: pairs, quads, octets)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 09</div>
+            <div class="unit-en">Combinational Circuits &amp; Flip-Flops</div>
+            <div class="unit-si">සංයෝජිත පරිපථ සහ ෆ්ලිප්-ෆ්ලොප්</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Half Adder: Sum = A ⊕ B, Carry = A · B
+Full Adder: Sum = A ⊕ B ⊕ C_in
+SR Flip-Flop, D Flip-Flop (Sequential Circuits basics)</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 04: Operating Systems &amp; Computer Architecture &nbsp;|&nbsp; මෙහෙයුම් පද්ධති හා පරිගණක ගෘහනිර්මාණ ශිල්පය</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 10</div>
+            <div class="unit-en">Von Neumann Architecture &amp; CPU Components</div>
+            <div class="unit-si">වොන් නියුමන් ගෘහනිර්මාණය සහ මධ්‍යම සැකසුම් ඒකකය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">ALU, CU, Registers (PC, MAR, MDR, IR, ACC)
+Busses: Data Bus, Address Bus, Control Bus
+Machine Cycle: Fetch -> Decode -> Execute -> Store</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 11</div>
+            <div class="unit-en">Memory Hierarchy &amp; Storage Devices</div>
+            <div class="unit-si">මතක ධූරාවලිය සහ ගබඩා උපාංග</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Registers > Cache (L1, L2, L3) > RAM/ROM > SSD/HDD
+RAM types (SRAM, DRAM), ROM types (PROM, EPROM, EEPROM)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 12</div>
+            <div class="unit-en">Operating System Functions &amp; Process Scheduling</div>
+            <div class="unit-si">මෙහෙයුම් පද්ධති කාර්යයන් සහ ක්‍රියාවලි කාලසටහන්කරණය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Process Management, Memory Management (Virtual Memory/Paging)
+File Systems, Security
+Process States: New, Ready, Running, Waiting, Terminated</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 05: Data Communication &amp; Computer Networks &nbsp;|&nbsp; දත්ත සන්නිවේදනය සහ පරිගණක ජාල</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 13</div>
+            <div class="unit-en">Transmission Media &amp; Network Topologies</div>
+            <div class="unit-si">සන්නිවේදන මාධ්‍ය සහ ජාල විෂමතාවයන්</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Guided (UTP, STP, Coaxial, Fiber Optics)
+Unguided (Radio, Microwave, Infrared)
+Topologies: Bus, Star, Ring, Mesh, Hybrid</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 14</div>
+            <div class="unit-en">OSI Reference Model &amp; TCP/IP Suite</div>
+            <div class="unit-si">OSI යොමු ආකෘතිය සහ TCP/IP ප්‍රොටෝකෝල කට්ටලය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">OSI 7 Layers: Physical, Data Link, Network, Transport, Session, Presentation, Application
+TCP/IP 4 Layers: Link, Internet, Transport, Application</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 15</div>
+            <div class="unit-en">IP Addressing &amp; Subnetting (IPv4 &amp; IPv6)</div>
+            <div class="unit-si">IP ලිපිනකරණය සහ උපජාලකරණය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">IPv4: 32-bit (Classes A, B, C, D, E & CIDR notation /24)
+Network ID & Host ID calculation
+IPv6: 128-bit Hexadecimal notation</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 16</div>
+            <div class="unit-en">Network Devices &amp; Services</div>
+            <div class="unit-si">ජාල උපාංග සහ සේවාවන්</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Hub, Switch, Router, Repeater, NIC, Gateway
+DNS (Domain Name System), DHCP, NAT, FTP, HTTP/HTTPS</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 06: Database Management Systems (Part 1) &nbsp;|&nbsp; දත්ත සමුදා කළමනාකරණ පද්ධති</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 17</div>
+            <div class="unit-en">Database Concepts &amp; Architecture</div>
+            <div class="unit-si">දත්ත සමුදා සංකල්ප සහ ගෘහනිර්මාණය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Flat File vs Relational Database Systems (RDBMS)
+Three-Schema Architecture: Internal, Conceptual, External
+Data Independence</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 18</div>
+            <div class="unit-en">Entity-Relationship (ER) Modeling</div>
+            <div class="unit-si">එන්ටිටි-සම්බන්ධතා ආකෘතිකරණය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Entities, Attributes (Simple, Composite, Multi-valued, Derived)
+Relationships & Cardinality Ratio (1:1, 1:N, M:N)
+ER Diagrams to Relational Schema Mapping</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 19</div>
+            <div class="unit-en">Relational Keys &amp; Integrity Rules</div>
+            <div class="unit-si">සම්බන්ධතා යතුරු සහ අඛණ්ඩතා නීති</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Super Key, Candidate Key, Primary Key, Alternate Key, Foreign Key
+Entity Integrity Rule (Primary Key ≠ NULL)
+Referential Integrity Rule</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g12">
+          <div class="card-info">
+            <div class="unit-num">Module 20</div>
+            <div class="unit-en">Database Normalization (1NF, 2NF, 3NF)</div>
+            <div class="unit-si">දත්ත සමුදා සාමාන්‍යකරණය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Anomalies: Insertion, Deletion, Update
+1NF: Atomic values
+2NF: Eliminate Partial Functional Dependency
+3NF: Eliminate Transitive Functional Dependency</div>
+      </div>
+    </div>
+
+  </div><div class="section-block" data-grade="g13">
+    <div class="section-header">
+      <h2>Software Engineering, Web Development &amp; Programming</h2>
+      <span class="si-label">මෘදුකාංග ඉංජිනේරු විද්‍යාව, වෙබ් සංවර්ධනය සහ ක්‍රමලේඛනය</span>
+      <span class="grade-badge">Grade 13 Curriculum</span>
+    </div>
+
+    <div class="group-label">Unit 06: Database Management Systems (Part 2 - SQL) &nbsp;|&nbsp; SQL භාෂාව</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 21</div>
+            <div class="unit-en">Structured Query Language (DDL Commands)</div>
+            <div class="unit-si">SQL දත්ත අර්ථදැක්වීමේ භාෂාව (DDL)</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Syntax</span>
+        <div class="formula-box">CREATE DATABASE, CREATE TABLE
+ALTER TABLE (ADD, DROP, MODIFY)
+DROP TABLE, Constraints (PRIMARY KEY, FOREIGN KEY, NOT NULL)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 22</div>
+            <div class="unit-en">Structured Query Language (DML Commands)</div>
+            <div class="unit-si">SQL දත්ත හසුරුවන භාෂාව (DML)</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Syntax</span>
+        <div class="formula-box">SELECT column_list FROM table WHERE condition;
+INSERT INTO, UPDATE, DELETE
+ORDER BY, GROUP BY, HAVING, Aggregate Functions (COUNT, SUM, AVG)</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 07: Web Development (HTML, CSS, JS, PHP) &nbsp;|&nbsp; වෙබ් අඩවි සංවර්ධනය</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 23</div>
+            <div class="unit-en">HTML5 Document Structure &amp; Form Elements</div>
+            <div class="unit-si">HTML5 ලේඛන ව්‍යුහය සහ ආකෘතිමය මූලද්‍රව්‍ය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Syntax</span>
+        <div class="formula-box">&lt;!DOCTYPE html&gt;, &lt;html&gt;, &lt;head&gt;, &lt;body&gt;
+Tables: &lt;table&gt;, &lt;tr&gt;, &lt;td&gt;, &lt;th&gt;
+Forms: &lt;form action="" method="POST/GET"&gt; &lt;input type="text"&gt;</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 24</div>
+            <div class="unit-en">CSS Styling &amp; Layout Box Model</div>
+            <div class="unit-si">CSS ස්ටයිලිං සහ පෙට්ටි ආකෘතිය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Syntax</span>
+        <div class="formula-box">Inline, Internal, and External Stylesheets
+CSS Selectors (Element, Class, ID)
+Box Model: Content -> Padding -> Border -> Margin</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 25</div>
+            <div class="unit-en">Client-Side Scripting with JavaScript</div>
+            <div class="unit-si">JavaScript මගින් සේවාලාභී පාර්ශවීය ක්‍රමලේඛනය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Syntax</span>
+        <div class="formula-box">DOM Manipulation: document.getElementById()
+Form Validation logic, Event Handling (onclick, onsubmit)
+Variables, conditional statements, and functions</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 26</div>
+            <div class="unit-en">Server-Side Scripting with PHP</div>
+            <div class="unit-si">PHP මගින් සේවාදායක පාර්ශවීය ක්‍රමලේඛනය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Syntax</span>
+        <div class="formula-box">&lt;?php ... ?&gt;
+Handling forms: $_GET["param"], $_POST["param"]
+Connecting to MySQL Database: mysqli_connect()</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 08: Software Engineering &nbsp;|&nbsp; මෘදුකාංග ඉංජිනේරු විද්‍යාව</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 27</div>
+            <div class="unit-en">Software Development Life Cycle (SDLC)</div>
+            <div class="unit-si">මෘදුකාංග සංවර්ධන ජීවන චක්‍රය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Phases: Requirement Analysis -> Design -> Coding -> Testing -> Deployment -> Maintenance
+Feasibility Study (Technical, Economic, Operational)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 28</div>
+            <div class="unit-en">Process Models (Waterfall, Agile, Spiral)</div>
+            <div class="unit-si">පද්ධති සංවර්ධන ආකෘති</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Waterfall Model (Sequential, rigid)
+Prototyping Model
+Agile Methodology & Spiral Model (Risk-driven)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 29</div>
+            <div class="unit-en">Testing Techniques &amp; Deployment Strategies</div>
+            <div class="unit-si">පරීක්ෂණ ක්‍රම සහ පද්ධති ස්ථාපනය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">White-Box vs Black-Box Testing
+Unit, Integration, System, Acceptance Testing
+Deployment: Direct, Parallel, Pilot, Phased</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 09: Python Programming &nbsp;|&nbsp; Python ක්‍රමලේඛනය</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 30</div>
+            <div class="unit-en">Variables, Data Types &amp; Operators</div>
+            <div class="unit-si">විල්‍යයන්, දත්ත වර්ග සහ මෙහෙයුම්කාරක</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Syntax</span>
+        <div class="formula-box">Data Types: int, float, str, bool
+Operators: Arithmetic (+, -, *, /, //, %),
+Relational (==, !=, >, <), Logical (and, or, not)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 31</div>
+            <div class="unit-en">Control Structures (Selection &amp; Iteration)</div>
+            <div class="unit-si">පාලන ව්‍යුහ (තේරීම් හා පුනර්කරණ)</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Syntax</span>
+        <div class="formula-box">if-elif-else statements
+Loops: for i in range(start, stop, step):
+while condition: (break and continue statements)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 32</div>
+            <div class="unit-en">Data Structures (Lists, Tuples, Dictionaries)</div>
+            <div class="unit-si">දත්ත ව්‍යුහයන් (Lists, Tuples, Dictionaries)</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Syntax</span>
+        <div class="formula-box">List: my_list = [1, 2, 3] (Mutable)
+Tuple: my_tuple = (1, 2, 3) (Immutable)
+Dictionary: my_dict = {"key": "value"}</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 33</div>
+            <div class="unit-en">Functions &amp; Scope</div>
+            <div class="unit-si">ශ්‍රිත සහ විෂය පථය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Syntax</span>
+        <div class="formula-box">def function_name(parameters):
+    return result
+Local vs Global variable scope</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 34</div>
+            <div class="unit-en">File Handling in Python</div>
+            <div class="unit-si">Python මගින් ගොනු හැසිරවීම</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Syntax</span>
+        <div class="formula-box">file = open("filename.txt", "r"/"w"/"a")
+file.read(), file.readline(), file.write()
+file.close() / with open() as file:</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 35</div>
+            <div class="unit-en">Algorithms (Searching &amp; Sorting)</div>
+            <div class="unit-si">ඇල්ගොරිතම (සෙවීම් සහ පෙළගැස්වීම්)</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Syntax</span>
+        <div class="formula-box">Linear Search vs Binary Search
+Bubble Sort Algorithm
+Flowcharts & Pseudocode design</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 10: Internet of Things (IoT) &nbsp;|&nbsp; වස්තු අන්තර්ජාලය</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 36</div>
+            <div class="unit-en">IoT Architecture &amp; Microcontrollers</div>
+            <div class="unit-si">IoT ගෘහනිර්මාණය සහ ක්ෂුද්‍ර පාලක</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">IoT Layers: Perception, Network, Application
+Microcontrollers: Arduino, Raspberry Pi, ESP32</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 37</div>
+            <div class="unit-en">Sensors, Actuators &amp; Protocols</div>
+            <div class="unit-si">සංවේදක, ක්‍රියාකාරක සහ ප්‍රොටෝකෝල</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Sensors: Temperature (DHT11), Ultrasonic, LDR
+Actuators: Servos, Relays, Motors
+Protocols: MQTT, CoAP, Zigbee</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 11: Emerging Technologies &amp; Business Applications &nbsp;|&nbsp; නැඟී එන තාක්ෂණයන් සහ ව්‍යාපාරික යෙදවුම්</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 38</div>
+            <div class="unit-en">Cloud Computing &amp; Services</div>
+            <div class="unit-si">වලාකුළු ගණනය සහ සේවාවන්</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">IaaS (Infrastructure as a Service)
+PaaS (Platform as a Service)
+SaaS (Software as a Service)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 39</div>
+            <div class="unit-en">E-Commerce &amp; Digital Payment Systems</div>
+            <div class="unit-si">විද්‍යුත් වාණිජ්‍යය සහ ඩිජිටල් ගෙවීම් පද්ධති</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">E-Commerce Types: B2B, B2C, C2C, C2B
+Payment Gateways, Electronic Fund Transfer (EFT)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-grade="g13">
+          <div class="card-info">
+            <div class="unit-num">Module 40</div>
+            <div class="unit-en">Artificial Intelligence &amp; Future Trends</div>
+            <div class="unit-si">කෘතිම බුද්ධිය සහ අනාගත ප්‍රවණතා</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Concept / Formula</span>
+        <div class="formula-box">Artificial Intelligence (AI), Machine Learning (ML), Expert Systems
+Software Agents, Robotics &amp; Ethics in Computing</div>
+      </div>
+    </div>
+
+  </div><footer>
+    <strong>A/L Information Technology — Master Reference Portal</strong><br>
+    Physical &amp; Technology Stream · 11 Units · 40 Core Modules · Systems, Hardware, Networking, Logic Gates, Databases, Python, Web &amp; IoT
+  </footer>
+
+</div>
+
+<script>
+  /* ── CANVAS DIGITAL / MATRIX ANIMATION ── */
+  const canvas = document.getElementById('ictCanvas');
+  const ctx = canvas.getContext('2d');
+  const symbols = ['0','1','AND','OR','NAND','NOR','XOR','HTML','CSS','PHP','SQL','def','if','else','class','IPv4','IPv6','IoT','AI'];
+  let W, H, particles = [];
+
+  function initCanvas() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    particles = Array.from({length: 45}, () => ({
+      x: Math.random()*W, y: Math.random()*H,
+      s: symbols[Math.floor(Math.random()*symbols.length)],
+      vx: (Math.random()-.5)*.25,
+      vy: (Math.random()-.5)*.25,
+      op: Math.random()*.12 + .04,
+      size: Math.random()*6 + 11
+    }));
+  }
+
+  function drawCanvas() {
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p => {
+      ctx.font = `${p.size}px JetBrains Mono, monospace`;
+      ctx.fillStyle = `rgba(168,85,247,${p.op})`;
+      ctx.fillText(p.s, p.x, p.y);
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < -40 || p.x > W+40) p.vx *= -1;
+      if(p.y < -40 || p.y > H+40) p.vy *= -1;
+    });
+    requestAnimationFrame(drawCanvas);
+  }
+
+  window.addEventListener('resize', initCanvas);
+  initCanvas(); drawCanvas();
+
+  /* ── PROGRESS TRACKER ── */
+  function updateProgress() {
+    const allTasks = document.querySelectorAll('.task');
+    const g12Tasks  = document.querySelectorAll('.task[data-grade="g12"]');
+    const g13Tasks  = document.querySelectorAll('.task[data-grade="g13"]');
+
+    const total     = allTasks.length;
+    const done      = [...allTasks].filter(t => t.checked).length;
+    const g12Done   = [...g12Tasks].filter(t => t.checked).length;
+    const g13Done   = [...g13Tasks].filter(t => t.checked).length;
+    const pct       = Math.round((done / total) * 100) || 0;
+
+    document.getElementById('pFill').style.width = pct + '%';
+    document.getElementById('pText').textContent = pct + '%';
+    document.getElementById('cDone').textContent = done;
+    document.getElementById('statG12').textContent   = `${g12Done}/${g12Tasks.length}`;
+    document.getElementById('statG13').textContent   = `${g13Done}/${g13Tasks.length}`;
+    document.getElementById('statTotal').textContent = `${done}/${total}`;
+
+    document.querySelectorAll('.task').forEach(cb => {
+      cb.closest('.unit-card').classList.toggle('completed', cb.checked);
+    });
+
+    const state = [...allTasks].map(t => t.checked);
+    try { localStorage.setItem('ict_progress', JSON.stringify(state)); } catch(e){}
+  }
+
+  try {
+    const saved = JSON.parse(localStorage.getItem('ict_progress') || '[]');
+    document.querySelectorAll('.task').forEach((cb, i) => {
+      if(saved[i]) cb.checked = true;
+    });
+  } catch(e){}
+
+  document.querySelectorAll('.task').forEach(cb => cb.addEventListener('change', updateProgress));
+  updateProgress();
+
+  /* ── TAB SWITCHER ── */
+  const tabs   = document.querySelectorAll('.tab-btn');
+  const blocks = document.querySelectorAll('.section-block');
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(b => b.className = 'tab-btn');
+      const tab = btn.dataset.tab;
+      if(tab === 'all') btn.classList.add('active-all');
+      if(tab === 'g12') btn.classList.add('active-g12');
+      if(tab === 'g13') btn.classList.add('active-g13');
+
+      blocks.forEach(bl => {
+        if(tab === 'all') bl.classList.remove('hidden');
+        else bl.classList.toggle('hidden', bl.dataset.grade !== tab);
+      });
+    });
+  });
+</script>
+</body>
+</html>

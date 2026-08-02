@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A/L Combined Mathematics — Master Reference</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,400;0,600;0,800;1,400;1,800&family=Noto+Sans+Sinhala:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080b10;
+      --surface: #0d1117;
+      --card: #111827;
+      --card-hover: #151f2e;
+      --border: rgba(255,255,255,0.07);
+      --border-bright: rgba(255,255,255,0.13);
+      --red: #e63946;
+      --red-glow: rgba(230,57,70,0.35);
+      --blue: #38bdf8;
+      --blue-glow: rgba(56,189,248,0.25);
+      --pink: #f472b6;
+      --pink-glow: rgba(244,114,182,0.25);
+      --green: #4ade80;
+      --amber: #fbbf24;
+      --text: #f1f5f9;
+      --muted: #64748b;
+      --dim: #334155;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Sinhala', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── ANIMATED BACKGROUND ── */
+    .bg-layer {
+      position: fixed; inset: 0; z-index: -1; overflow: hidden;
+      background:
+        radial-gradient(ellipse 70% 50% at 0% 30%, rgba(140,20,20,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 80%, #060a12 0%, var(--bg) 70%),
+        var(--bg);
+    }
+    .grid-layer {
+      position: absolute; width: 200%; height: 200%;
+      top: -50%; left: -50%;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.018) 1px, transparent 1px);
+      background-size: 60px 60px;
+      transform: rotateX(55deg);
+      animation: grid-scroll 80s linear infinite;
+    }
+    @keyframes grid-scroll {
+      from { transform: rotateX(55deg) translateY(0); }
+      to   { transform: rotateX(55deg) translateY(60px); }
+    }
+    #mathCanvas { position: absolute; inset: 0; pointer-events: none; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 28px 80px; }
+
+    /* ── HEADER ── */
+    header {
+      padding: 80px 28px 64px;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Ghost shade — large faded title on the RIGHT side */
+    header::before {
+      content: 'COMBINED MATHS';
+      position: absolute;
+      right: -40px; top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(5rem, 14vw, 13rem);
+      font-weight: 900;
+      letter-spacing: -6px;
+      line-height: 1;
+      white-space: nowrap;
+      pointer-events: none;
+      background: linear-gradient(
+        to left,
+        rgba(255,255,255,0.055) 0%,
+        rgba(255,255,255,0.02) 50%,
+        rgba(255,255,255,0) 100%
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      user-select: none;
+      z-index: 0;
+    }
+
+    /* Red vertical bar accent on left */
+    header::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: linear-gradient(to bottom, transparent, var(--red), transparent);
+    }
+
+    header > * { position: relative; z-index: 1; }
+
+    .header-label {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 10px; font-weight: 800;
+      letter-spacing: .45em; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .header-label::before {
+      content: '';
+      display: inline-block; width: 28px; height: 2px;
+      background: var(--red); border-radius: 2px;
+    }
+    .header-label span { color: var(--red); }
+
+    /* Main title — BOLD, not italic */
+    h1 {
+      font-size: clamp(3.2rem, 9vw, 7.5rem);
+      font-weight: 900;
+      font-style: normal;
+      letter-spacing: -4px;
+      line-height: 0.92;
+      margin-bottom: 6px;
+      color: #ffffff;
+    }
+    h1 .word-combined {
+      display: block;
+      color: rgba(255,255,255,0.92);
+    }
+    h1 .word-maths {
+      display: block;
+      color: var(--red);
+      text-shadow: 0 0 60px rgba(230,57,70,0.4);
+    }
+
+    .header-si {
+      font-family: 'Noto Sans Sinhala', sans-serif;
+      color: var(--muted); font-size: .95rem; margin: 18px 0 10px;
+    }
+    .header-sub {
+      font-size: .88rem; color: var(--muted); max-width: 420px;
+    }
+
+    /* ── STICKY NAV / PROGRESS ── */
+    .progress-nav {
+      position: sticky; top: 16px; z-index: 100;
+      margin-bottom: 48px;
+    }
+    .progress-bar-wrap {
+      background: rgba(8,11,16,0.88);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--border-bright);
+      border-radius: 18px;
+      padding: 20px 28px;
+      display: flex; align-items: center; gap: 20px;
+    }
+    .progress-label {
+      flex-shrink: 0;
+    }
+    .progress-label .tag {
+      font-size: 9px; font-weight: 800; letter-spacing: .4em;
+      text-transform: uppercase; color: var(--red);
+      display: block; margin-bottom: 4px;
+    }
+    #pText {
+      font-size: 2rem; font-weight: 800; font-style: italic;
+      letter-spacing: -2px; line-height: 1;
+    }
+    .bar-track {
+      flex: 1; height: 4px; background: var(--border-bright);
+      border-radius: 99px; overflow: hidden;
+    }
+    #pFill {
+      height: 100%; width: 0%;
+      background: var(--red);
+      box-shadow: 0 0 16px var(--red-glow);
+      border-radius: 99px;
+      transition: width 0.9s cubic-bezier(.23,1,.32,1);
+    }
+    .progress-counts {
+      flex-shrink: 0; text-align: right;
+    }
+    .progress-counts .checked-count {
+      font-size: 1.1rem; font-weight: 700; color: var(--text);
+    }
+    .progress-counts .total-count {
+      font-size: .75rem; color: var(--muted);
+    }
+
+    /* ── TAB SWITCHER ── */
+    .tab-switcher {
+      display: flex; gap: 10px; margin-bottom: 40px;
+      justify-content: center;
+    }
+    .tab-btn {
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--muted); padding: 10px 26px;
+      border-radius: 99px; cursor: pointer;
+      font-family: inherit; font-size: .85rem; font-weight: 700;
+      letter-spacing: .04em; transition: all .3s;
+    }
+    .tab-btn:hover { border-color: var(--border-bright); color: var(--text); }
+    .tab-btn.active-pure  { background: rgba(56,189,248,.1); border-color: var(--blue); color: var(--blue); }
+    .tab-btn.active-applied { background: rgba(244,114,182,.1); border-color: var(--pink); color: var(--pink); }
+    .tab-btn.active-all { background: rgba(230,57,70,.1); border-color: var(--red); color: var(--red); }
+
+    /* ── SECTION HEADERS ── */
+    .section-block { margin-bottom: 56px; }
+    .section-block[data-paper="pure"] { --accent: var(--blue); --accent-glow: var(--blue-glow); }
+    .section-block[data-paper="applied"] { --accent: var(--pink); --accent-glow: var(--pink-glow); }
+
+    .section-header {
+      display: flex; align-items: baseline; gap: 16px;
+      margin-bottom: 24px; padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .section-header::after {
+      content: ''; position: absolute; bottom: -1px; left: 0;
+      width: 60px; height: 2px;
+      background: var(--accent); border-radius: 2px;
+    }
+    .section-header h2 {
+      font-size: 1.8rem; font-weight: 800; font-style: italic;
+      color: var(--text); letter-spacing: -1px;
+    }
+    .section-header .si-label {
+      font-family: 'Noto Sans Sinhala', sans-serif;
+      font-size: .8rem; color: var(--muted);
+    }
+    .section-header .paper-badge {
+      margin-left: auto; font-size: .7rem; font-weight: 800;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: var(--accent); background: rgba(255,255,255,.04);
+      border: 1px solid var(--accent); padding: 4px 12px;
+      border-radius: 99px; white-space: nowrap;
+    }
+
+    /* ── UNIT GRID ── */
+    .group-label {
+      font-size: .7rem; font-weight: 800; letter-spacing: .35em;
+      text-transform: uppercase; color: var(--muted);
+      margin: 28px 0 12px;
+    }
+    .unit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+
+    /* ── UNIT CARD ── */
+    .unit-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      transition: all .3s cubic-bezier(.23,1,.32,1);
+      position: relative; overflow: hidden;
+    }
+    .unit-card::before {
+      content: ''; position: absolute;
+      left: 0; top: 0; bottom: 0; width: 3px;
+      background: var(--accent); border-radius: 3px 0 0 3px;
+      opacity: 0; transition: opacity .3s;
+    }
+    .unit-card:hover {
+      background: var(--card-hover);
+      border-color: rgba(255,255,255,0.12);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0,0,0,.4);
+    }
+    .unit-card:hover::before { opacity: 1; }
+    .unit-card.completed {
+      border-color: rgba(74,222,128,.15);
+      background: rgba(74,222,128,.03);
+    }
+    .unit-card.completed::before { opacity: 1; background: var(--green); }
+
+    .card-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+
+    /* Custom checkbox */
+    .cb {
+      appearance: none; flex-shrink: 0;
+      width: 20px; height: 20px; margin-top: 2px;
+      border: 1.5px solid var(--dim); border-radius: 5px;
+      cursor: pointer; position: relative; transition: all .25s;
+      background: transparent;
+    }
+    .cb:hover { border-color: var(--accent); }
+    .cb:checked {
+      background: var(--green); border-color: var(--green);
+      box-shadow: 0 0 12px rgba(74,222,128,.4);
+    }
+    .cb:checked::after {
+      content: ''; position: absolute;
+      left: 6px; top: 2px; width: 5px; height: 10px;
+      border: 2px solid #fff; border-top: none; border-left: none;
+      transform: rotate(45deg);
+    }
+
+    .card-info { flex: 1; }
+    .unit-num {
+      font-size: .68rem; font-weight: 700; letter-spacing: .2em;
+      color: var(--muted); margin-bottom: 3px;
+    }
+    .unit-en { font-size: 1rem; font-weight: 700; color: var(--text); line-height: 1.3; }
+    .unit-si {
+      font-family: 'Noto Sans Sinhala', sans-serif;
+      font-size: .8rem; color: var(--muted); margin-top: 2px;
+    }
+
+    /* Formula / example box */
+    .formula-box {
+      background: rgba(0,0,0,.35);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-family: var(--mono);
+      font-size: .78rem; color: #94a3b8;
+      white-space: pre-wrap; line-height: 1.55;
+    }
+    .formula-label {
+      font-size: .65rem; font-weight: 800; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 5px; display: block;
+    }
+
+    /* ── HIDDEN SECTION LOGIC ── */
+    .section-block.hidden { display: none; }
+
+    /* ── STATS FOOTER ── */
+    .stats-strip {
+      display: flex; flex-wrap: wrap; gap: 20px;
+      justify-content: center; margin-bottom: 60px;
+    }
+    .stat-box {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px 28px; text-align: center;
+      min-width: 140px;
+    }
+    .stat-val { font-size: 2rem; font-weight: 800; font-style: italic; letter-spacing: -2px; }
+    .stat-lbl { font-size: .72rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+    .stat-pure .stat-val { color: var(--blue); }
+    .stat-applied .stat-val { color: var(--pink); }
+    .stat-total .stat-val { color: var(--red); }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 32px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted); font-size: .85rem;
+    }
+    footer strong { color: var(--text); }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 99px; }
+
+    @media (max-width: 600px) {
+      h1 { letter-spacing: -2px; }
+      .unit-grid { grid-template-columns: 1fr; }
+      .progress-counts { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-layer">
+  <div class="grid-layer"></div>
+  <canvas id="mathCanvas"></canvas>
+</div>
+
+<div class="container">
+
+  <!-- Header -->
+  <header>
+    <div class="header-label">Physical Science Stream &nbsp;·&nbsp; <span>G.C.E. Advanced Level</span></div>
+    <h1>
+      <span class="word-combined">COMBINED</span>
+      <span class="word-maths">MATHS</span>
+    </h1>
+    <p class="header-si">සංයුක්ත ගණිතය — සම්පූර්ණ විෂය නිර්දේශය</p>
+    <p class="header-sub">Bilingual master reference · Formulas &amp; practical examples · 40 units · Papers I &amp; II</p>
+  </header>
+
+  <!-- Stats Strip -->
+  <div class="stats-strip">
+    <div class="stat-box stat-pure">
+      <div class="stat-val" id="statPure">0/18</div>
+      <div class="stat-lbl">Pure Maths (Paper I)</div>
+    </div>
+    <div class="stat-box stat-applied">
+      <div class="stat-val" id="statApplied">0/22</div>
+      <div class="stat-lbl">Applied Maths (Paper II)</div>
+    </div>
+    <div class="stat-box stat-total">
+      <div class="stat-val" id="statTotal">0/40</div>
+      <div class="stat-lbl">Total Units</div>
+    </div>
+  </div>
+
+  <!-- Progress Nav -->
+  <div class="progress-nav">
+    <div class="progress-bar-wrap">
+      <div class="progress-label">
+        <span class="tag">Mastery</span>
+        <span id="pText">0%</span>
+      </div>
+      <div class="bar-track"><div id="pFill"></div></div>
+      <div class="progress-counts">
+        <div class="checked-count"><span id="cDone">0</span> done</div>
+        <div class="total-count">of 40 units</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Switcher -->
+  <div class="tab-switcher">
+    <button class="tab-btn active-all" data-tab="all">All Units</button>
+    <button class="tab-btn" data-tab="pure">Pure Maths</button>
+    <button class="tab-btn" data-tab="applied">Applied Maths</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════ PAPER I ═══════════ -->
+  <div class="section-block" data-paper="pure">
+    <div class="section-header">
+      <h2>Pure Mathematics</h2>
+      <span class="si-label">ශුද්ධ ගණිතය</span>
+      <span class="paper-badge">Paper I</span>
+    </div>
+
+    <!-- ALGEBRA -->
+    <div class="group-label">Algebra &nbsp;|&nbsp; වීජ ගණිතය</div>
+    <div class="unit-grid">
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 01</div>
+            <div class="unit-en">Real Number System</div>
+            <div class="unit-si">තාත්වික සංඛ්‍යා පද්ධතිය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">ℝ ⊃ ℚ ⊃ ℤ ⊃ ℕ
+Intervals: (a, b), [a, b], (-∞, ∞)
+|x| = x if x ≥ 0; -x if x &lt; 0</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 02</div>
+            <div class="unit-en">Functions and Graphs</div>
+            <div class="unit-si">ශ්‍රිත සහ ප්‍රස්ථාර</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">f(x) = 2x + 1  →  f(3) = 7
+Domain, Range, One-to-one, Onto
+(f∘g)(x) = f(g(x))</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 03</div>
+            <div class="unit-en">Quadratic Equations</div>
+            <div class="unit-si">වර්ගජ සමීකරණ සහ ප්‍රකාශන</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">x = (-b ± √(b²-4ac)) / 2a
+x² - 5x + 6 = 0  →  x = 2 or 3
+Discriminant: Δ = b² - 4ac</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 04</div>
+            <div class="unit-en">Polynomials</div>
+            <div class="unit-si">බහුපද ශ්‍රිත</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">p(x) = x³ - 2x² + x - 4
+Factor Theorem: p(a)=0 ⟹ (x-a) is factor
+Remainder Theorem: p(a) = remainder</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 05</div>
+            <div class="unit-en">Equations &amp; Inequalities</div>
+            <div class="unit-si">සමීකරණ පද්ධති සහ අසමානතා</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">x + 3 > 7  →  x > 4
+System: 2x+y=5, x-y=1  →  x=2, y=1
+|x - 3| &lt; 2  →  1 &lt; x &lt; 5</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 06</div>
+            <div class="unit-en">Mathematical Induction</div>
+            <div class="unit-si">ගණිත අභ්‍යුහනය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">Prove: 1+2+3+…+n = n(n+1)/2
+Step 1: Verify for n=1
+Step 2: Assume true for n=k
+Step 3: Prove for n=k+1</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 07</div>
+            <div class="unit-en">Binomial Theorem</div>
+            <div class="unit-si">ද්විපද ප්‍රමේයය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">(a+b)ⁿ = Σ C(n,r) aⁿ⁻ʳ bʳ
+(1+x)³ = 1 + 3x + 3x² + x³
+General term: T(r+1) = C(n,r) aⁿ⁻ʳbʳ</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 08</div>
+            <div class="unit-en">Logarithms</div>
+            <div class="unit-si">ලඝුගණක</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">log₂8 = 3  (since 2³ = 8)
+log(ab) = log a + log b
+log(a/b) = log a - log b
+log aⁿ  = n log a</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 09</div>
+            <div class="unit-en">Complex Numbers</div>
+            <div class="unit-si">සංකීර්ණ සංඛ්‍යා</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">z = a + bi,  i² = -1
+|z| = √(a²+b²)
+Conjugate: z̄ = a - bi
+Polar: z = r(cosθ + i sinθ)</div>
+      </div>
+    </div>
+
+    <!-- TRIGONOMETRY -->
+    <div class="group-label">Trigonometry &nbsp;|&nbsp; ත්‍රිකෝණමිතිය</div>
+    <div class="unit-grid">
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 10</div>
+            <div class="unit-en">Trigonometric Functions</div>
+            <div class="unit-si">ත්‍රිකෝණමිතික ශ්‍රිත</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">sin 30° = 1/2,  cos 60° = 1/2
+tan θ = sin θ / cos θ
+Radians: π rad = 180°</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 11</div>
+            <div class="unit-en">Trigonometric Identities</div>
+            <div class="unit-si">ත්‍රිකෝණමිතික සර්වසාම්‍ය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">sin²x + cos²x = 1
+1 + tan²x = sec²x
+sin(A±B) = sinA cosB ± cosA sinB
+sin 2x = 2 sinx cosx</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 12</div>
+            <div class="unit-en">General Solutions of Trig Equations</div>
+            <div class="unit-si">ත්‍රිකෝණමිතික සමීකරණවල පොදු විසඳුම්</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">sin x = 1/2  →  x = 30° or 150°
+General: sin x = sin α  →  x = nπ + (-1)ⁿα
+cos x = cos α →  x = 2nπ ± α</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 13</div>
+            <div class="unit-en">Inverse Trigonometric Functions</div>
+            <div class="unit-si">ප්‍රතිලෝම ත්‍රිකෝණමිතික ශ්‍රිත</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">sin⁻¹(1/2) = π/6 = 30°
+Domain of sin⁻¹: [-1, 1]
+Range  of sin⁻¹: [-π/2, π/2]</div>
+      </div>
+    </div>
+
+    <!-- CALCULUS & GEOMETRY -->
+    <div class="group-label">Calculus &amp; Coordinate Geometry &nbsp;|&nbsp; කලනය සහ ජ්‍යාමිතිය</div>
+    <div class="unit-grid">
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 14</div>
+            <div class="unit-en">Limits of Functions</div>
+            <div class="unit-si">ශ්‍රිතවල සීමාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">lim(x→2) (x + 1) = 3
+lim(x→0) sin x / x = 1
+L'Hôpital: lim f(x)/g(x) = lim f'(x)/g'(x)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 15</div>
+            <div class="unit-en">Differentiation</div>
+            <div class="unit-si">අවකලනය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">d/dx(xⁿ) = nxⁿ⁻¹
+d/dx(sin x) = cos x
+Product rule: (uv)' = u'v + uv'
+Chain rule:  dy/dx = dy/du · du/dx</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 15b</div>
+            <div class="unit-en">Applications of Derivatives</div>
+            <div class="unit-si">අවකලන යෙදුම් · Maxima &amp; Minima</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">Turning pts: dy/dx = 0
+Max if d²y/dx² &lt; 0
+Min if d²y/dx² > 0
+Tangent slope = dy/dx at point</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 16</div>
+            <div class="unit-en">Integration</div>
+            <div class="unit-si">අනුකලනය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">∫xⁿ dx = xⁿ⁺¹/(n+1) + C
+∫sin x dx = -cos x + C
+∫[0→2] x dx = [x²/2]₀² = 2
+Area = ∫|f(x)| dx</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 17</div>
+            <div class="unit-en">Straight Line</div>
+            <div class="unit-si">සරල රේඛාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">y = mx + c  (slope-intercept)
+Distance = √((x₂-x₁)²+(y₂-y₁)²)
+Midpoint = ((x₁+x₂)/2, (y₁+y₂)/2)
+Angle: tan θ = (m₁-m₂)/(1+m₁m₂)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="pure">
+          <div class="card-info">
+            <div class="unit-num">Unit 18</div>
+            <div class="unit-en">Circle</div>
+            <div class="unit-si">වෘත්තය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">(x-a)² + (y-b)² = r²
+Centre (0,0): x² + y² = r²
+General: x²+y²+2gx+2fy+c = 0
+Tangent at (x₁,y₁): xx₁+yy₁ = r²</div>
+      </div>
+
+    </div>
+  </div><!-- end Pure -->
+
+
+  <!-- ═══════════════════════════════════════ PAPER II ═══════════ -->
+  <div class="section-block" data-paper="applied">
+    <div class="section-header">
+      <h2>Applied Mathematics</h2>
+      <span class="si-label">ව්‍යවහාරික ගණිතය</span>
+      <span class="paper-badge">Paper II</span>
+    </div>
+
+    <!-- VECTORS -->
+    <div class="group-label">Vectors &nbsp;|&nbsp; දෛශික</div>
+    <div class="unit-grid">
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 19</div>
+            <div class="unit-en">Introduction to Vectors</div>
+            <div class="unit-si">දෛශික හැඳින්වීම</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">A = (2, 3), B = (1, 4)
+A + B = (3, 7)
+|A| = √(2²+3²) = √13
+Unit vector: â = A/|A|</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 20</div>
+            <div class="unit-en">Scalar (Dot) Product</div>
+            <div class="unit-si">දෛශික සංරචක සහ අදිශ ගුණිතය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">A·B = |A||B|cosθ
+     = a₁b₁ + a₂b₂ + a₃b₃
+Perpendicular: A·B = 0
+Projection: comp of A on B = A·B/|B|</div>
+      </div>
+    </div>
+
+    <!-- STATICS -->
+    <div class="group-label">Statics &nbsp;|&nbsp; ස්ථිති විද්‍යාව</div>
+    <div class="unit-grid">
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 21</div>
+            <div class="unit-en">Resolution of Forces</div>
+            <div class="unit-si">සමතල බල සම්ප්‍රයුක්තය සහ විභේදනය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">Fx = F cosθ,  Fy = F sinθ
+Resultant: R = √(ΣFx² + ΣFy²)
+Direction: tan α = ΣFy / ΣFx</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 22</div>
+            <div class="unit-en">Equilibrium of a Particle</div>
+            <div class="unit-si">අංශුවක සමතුලිතතාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">Lami's Theorem:
+F₁/sin α = F₂/sin β = F₃/sin γ
+Conditions: ΣFx = 0, ΣFy = 0</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 23</div>
+            <div class="unit-en">Couples &amp; Resultants</div>
+            <div class="unit-si">බල යුග්ම සහ සම්ප්‍රයුක්තය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">Moment = Force × perpendicular distance
+Couple = F × d  (no resultant force)
+Varignon's Theorem: Moment of resultant
+= sum of moments of components</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 24</div>
+            <div class="unit-en">Equilibrium of Rigid Bodies</div>
+            <div class="unit-si">දෘඪ වස්තුවල සමතුලිතතාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">ΣFx = 0,  ΣFy = 0,  ΣM = 0
+Beam on two supports:
+R₁ + R₂ = W (total load)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 25</div>
+            <div class="unit-en">Friction</div>
+            <div class="unit-si">ඝර්ෂණය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">F = μR  (limiting friction)
+μ = tan λ  (λ = angle of friction)
+On inclined plane at angle α:
+  F = W(sinα + μcosα)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 26</div>
+            <div class="unit-en">Jointed Rods (Frameworks)</div>
+            <div class="unit-si">සන්ධි කළ දඬු (සැකිලි)</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">Method of joints: resolve at each pin
+Tension (T) — rod being pulled apart
+Compression (C) — rod being pushed
+ΣFx = 0 and ΣFy = 0 at each joint</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 27</div>
+            <div class="unit-en">Centre of Gravity</div>
+            <div class="unit-si">ගුරුත්ව කේන්ද්‍රය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">x̄ = Σmᵢxᵢ / Σmᵢ
+ȳ = Σmᵢyᵢ / Σmᵢ
+Uniform lamina: geometric centroid
+Hemisphere: 3r/8 from flat face</div>
+      </div>
+    </div>
+
+    <!-- DYNAMICS -->
+    <div class="group-label">Dynamics &nbsp;|&nbsp; ගති විද්‍යාව</div>
+    <div class="unit-grid">
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 28</div>
+            <div class="unit-en">Kinematics (Linear Motion)</div>
+            <div class="unit-si">සරල රේඛීය චලිතය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">v = u + at
+s = ut + ½at²
+v² = u² + 2as
+s = ½(u + v)t</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 29</div>
+            <div class="unit-en">Relative Velocity</div>
+            <div class="unit-si">සාපේක්ෂ ප්‍රවේගය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">V_AB = V_A - V_B
+Closest approach: perpendicular to
+relative velocity line
+River crossing problems</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 30</div>
+            <div class="unit-en">Projectiles</div>
+            <div class="unit-si">ප්‍රක්ෂිප්ත</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">Range R = u²sin2θ / g
+Max height H = u²sin²θ / 2g
+Time of flight T = 2u sinθ / g
+Equation: y = x tanθ - gx²/2u²cos²θ</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 31</div>
+            <div class="unit-en">Newton's Laws of Motion</div>
+            <div class="unit-si">නිව්ටන්ගේ චලිත නියම</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">1st: F = 0 ⟹ no change in motion
+2nd: F = ma  (m=2kg, a=5m/s² → F=10N)
+3rd: Action = Reaction (opposite dir.)
+Connected particles via string/pulley</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 32</div>
+            <div class="unit-en">Work, Energy &amp; Power</div>
+            <div class="unit-si">කාර්යය, ශක්තිය සහ බලය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">W = Fs cosθ
+KE = ½mv²,  PE = mgh
+Conservation: KE + PE = constant
+Power P = W/t = Fv</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 33</div>
+            <div class="unit-en">Impulse &amp; Momentum</div>
+            <div class="unit-si">ආවේගය සහ ගම්‍යතාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">Impulse J = Ft = mv - mu
+Conservation: m₁u₁+m₂u₂ = m₁v₁+m₂v₂
+Newton's Law of Restitution:
+e = (v₂-v₁)/(u₁-u₂)  (0 ≤ e ≤ 1)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 34</div>
+            <div class="unit-en">Circular Motion</div>
+            <div class="unit-si">වෘත්ත චලිතය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">a = v²/r = rω²  (centripetal)
+F = mv²/r = mrω²
+ω = 2π/T = 2πf
+Conical pendulum: T cosθ = mg</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 35</div>
+            <div class="unit-en">Simple Harmonic Motion (SHM)</div>
+            <div class="unit-si">සරල අනුවර්තී චලිතය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">ẍ = -ω²x
+x = a sin(ωt + φ)
+v² = ω²(a²- x²)
+Period T = 2π/ω = 2π√(l/g) (pendulum)</div>
+      </div>
+    </div>
+
+    <!-- STATS & PROB -->
+    <div class="group-label">Statistics &amp; Probability &nbsp;|&nbsp; සංඛ්‍යානය</div>
+    <div class="unit-grid">
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 36</div>
+            <div class="unit-en">Permutations &amp; Combinations</div>
+            <div class="unit-si">වාරණ සහ සංයෝජන</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">nPr = n! / (n-r)!
+nCr = n! / (r!(n-r)!)
+5P3 = 60,  5C3 = 10
+Arrangements with repetition: nʳ</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 37</div>
+            <div class="unit-en">Basic Probability</div>
+            <div class="unit-si">මූලික සම්භාවිතාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">P(A) = favourable / total outcomes
+P(A∪B) = P(A)+P(B) - P(A∩B)
+P(Aᶜ) = 1 - P(A)
+P(A∩B) = P(A)·P(B)  [if independent]</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 38</div>
+            <div class="unit-en">Conditional Probability</div>
+            <div class="unit-si">සප්‍රතිබද්ධ සම්භාවිතාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">P(A|B) = P(A∩B) / P(B)
+Bayes' Theorem:
+P(A|B) = P(B|A)P(A) / P(B)
+Tree diagrams for sequential events</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 39</div>
+            <div class="unit-en">Descriptive Statistics</div>
+            <div class="unit-si">විස්තරාත්මක සංඛ්‍යානය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">Mean x̄ = Σx / n
+Median: middle value (ordered data)
+Mode: most frequent value
+Variance σ² = Σ(x-x̄)²/n
+SD σ = √(Variance)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="applied">
+          <div class="card-info">
+            <div class="unit-num">Unit 40</div>
+            <div class="unit-en">Probability Distributions</div>
+            <div class="unit-si">සම්භාවිතා ව්‍යාප්ති</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Example</span>
+        <div class="formula-box">Binomial: P(X=r) = C(n,r) pʳ(1-p)ⁿ⁻ʳ
+  Mean = np,  Var = np(1-p)
+Normal: Z = (X - μ) / σ
+  68-95-99.7 rule</div>
+      </div>
+    </div>
+  </div><!-- end Applied -->
+
+  <!-- Footer -->
+  <footer>
+    <strong>A/L Combined Mathematics — Master Reference</strong><br>
+    ODSDLabs | COMBINED MATHS · Physical Science Stream · 40 Units · Papers I &amp; II
+  </footer>
+
+</div><!-- container -->
+
+<script>
+  /* ── CANVAS PARTICLES ── */
+  const canvas = document.getElementById('mathCanvas');
+  const ctx = canvas.getContext('2d');
+  const symbols = ['∫','Σ','dy/dx','θ','π','Δ','∞','√','λ','lim','ω','α','β','∇','∂','ℝ','ℂ','⊂','∩','∪'];
+  let W, H, particles = [];
+
+  function initCanvas() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    particles = Array.from({length: 50}, () => ({
+      x: Math.random()*W, y: Math.random()*H,
+      s: symbols[Math.floor(Math.random()*symbols.length)],
+      vx: (Math.random()-.5)*.25,
+      vy: (Math.random()-.5)*.25,
+      op: Math.random()*.12 + .04,
+      size: Math.random()*6 + 11
+    }));
+  }
+
+  function drawCanvas() {
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p => {
+      ctx.font = `${p.size}px JetBrains Mono, monospace`;
+      ctx.fillStyle = `rgba(255,255,255,${p.op})`;
+      ctx.fillText(p.s, p.x, p.y);
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < -40 || p.x > W+40) p.vx *= -1;
+      if(p.y < -40 || p.y > H+40) p.vy *= -1;
+    });
+    requestAnimationFrame(drawCanvas);
+  }
+
+  window.addEventListener('resize', initCanvas);
+  initCanvas(); drawCanvas();
+
+  /* ── PROGRESS TRACKER ── */
+  const TOTAL = 40;
+  function updateProgress() {
+    const allTasks = document.querySelectorAll('.task');
+    const pureTasks = document.querySelectorAll('.task[data-paper="pure"]');
+    const appliedTasks = document.querySelectorAll('.task[data-paper="applied"]');
+
+    const done      = [...allTasks].filter(t => t.checked).length;
+    const pureDone  = [...pureTasks].filter(t => t.checked).length;
+    const appDone   = [...appliedTasks].filter(t => t.checked).length;
+    const pct       = Math.round(done / TOTAL * 100);
+
+    document.getElementById('pFill').style.width = pct + '%';
+    document.getElementById('pText').textContent = pct + '%';
+    document.getElementById('cDone').textContent = done;
+    document.getElementById('statPure').textContent    = `${pureDone}/${pureTasks.length}`;
+    document.getElementById('statApplied').textContent = `${appDone}/${appliedTasks.length}`;
+    document.getElementById('statTotal').textContent   = `${done}/${TOTAL}`;
+
+    // toggle completed class on card
+    document.querySelectorAll('.task').forEach(cb => {
+      cb.closest('.unit-card').classList.toggle('completed', cb.checked);
+    });
+
+    // persist
+    const state = [...allTasks].map(t => t.checked);
+    try { localStorage.setItem('cm_progress', JSON.stringify(state)); } catch(e){}
+  }
+
+  // restore saved state
+  try {
+    const saved = JSON.parse(localStorage.getItem('cm_progress') || '[]');
+    document.querySelectorAll('.task').forEach((cb, i) => {
+      if(saved[i]) cb.checked = true;
+    });
+  } catch(e){}
+
+  document.querySelectorAll('.task').forEach(cb => cb.addEventListener('change', updateProgress));
+  updateProgress();
+
+  /* ── TAB SWITCHER ── */
+  const tabs   = document.querySelectorAll('.tab-btn');
+  const blocks = document.querySelectorAll('.section-block');
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(b => b.className = 'tab-btn');
+      const tab = btn.dataset.tab;
+      if(tab === 'all')     btn.classList.add('active-all');
+      if(tab === 'pure')    btn.classList.add('active-pure');
+      if(tab === 'applied') btn.classList.add('active-applied');
+
+      blocks.forEach(bl => {
+        if(tab === 'all') bl.classList.remove('hidden');
+        else bl.classList.toggle('hidden', bl.dataset.paper !== tab);
+      });
+    });
+  });
+</script>
+</body>
+</html>

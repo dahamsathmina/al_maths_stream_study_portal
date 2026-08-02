@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A/L Physics — Master Reference</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,400;0,600;0,800;1,400;1,800&family=Noto+Sans+Sinhala:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06090e;
+      --surface: #0b0f17;
+      --card: #101622;
+      --card-hover: #162032;
+      --border: rgba(255,255,255,0.08);
+      --border-bright: rgba(255,255,255,0.15);
+      --amber: #f59e0b;
+      --amber-glow: rgba(245,158,11,0.35);
+      --cyan: #06b6d4;
+      --cyan-glow: rgba(6,182,212,0.25);
+      --purple: #a855f7;
+      --purple-glow: rgba(168,85,247,0.25);
+      --green: #10b981;
+      --text: #f8fafc;
+      --muted: #64748b;
+      --dim: #334155;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Sinhala', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── ANIMATED BACKGROUND ── */
+    .bg-layer {
+      position: fixed; inset: 0; z-index: -1; overflow: hidden;
+      background:
+        radial-gradient(ellipse 70% 50% at 0% 30%, rgba(180,100,20,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 80%, #04070d 0%, var(--bg) 70%),
+        var(--bg);
+    }
+    .grid-layer {
+      position: absolute; width: 200%; height: 200%;
+      top: -50%; left: -50%;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.018) 1px, transparent 1px);
+      background-size: 60px 60px;
+      transform: rotateX(55deg);
+      animation: grid-scroll 80s linear infinite;
+    }
+    @keyframes grid-scroll {
+      from { transform: rotateX(55deg) translateY(0); }
+      to   { transform: rotateX(55deg) translateY(60px); }
+    }
+    #physicsCanvas { position: absolute; inset: 0; pointer-events: none; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 28px 80px; }
+
+    /* ── HEADER ── */
+    header {
+      padding: 80px 28px 64px;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: 'PHYSICS';
+      position: absolute;
+      right: -20px; top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(6rem, 16vw, 15rem);
+      font-weight: 900;
+      letter-spacing: -6px;
+      line-height: 1;
+      white-space: nowrap;
+      pointer-events: none;
+      background: linear-gradient(
+        to left,
+        rgba(255,255,255,0.055) 0%,
+        rgba(255,255,255,0.02) 50%,
+        rgba(255,255,255,0) 100%
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      user-select: none;
+      z-index: 0;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: linear-gradient(to bottom, transparent, var(--amber), transparent);
+    }
+
+    header > * { position: relative; z-index: 1; }
+
+    .header-label {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 10px; font-weight: 800;
+      letter-spacing: .45em; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .header-label::before {
+      content: '';
+      display: inline-block; width: 28px; height: 2px;
+      background: var(--amber); border-radius: 2px;
+    }
+    .header-label span { color: var(--amber); }
+
+    h1 {
+      font-size: clamp(3.2rem, 9vw, 7.5rem);
+      font-weight: 900;
+      font-style: normal;
+      letter-spacing: -4px;
+      line-height: 0.92;
+      margin-bottom: 6px;
+      color: #ffffff;
+    }
+    h1 .word-al {
+      display: block;
+      color: rgba(255,255,255,0.92);
+    }
+    h1 .word-physics {
+      display: block;
+      color: var(--amber);
+      text-shadow: 0 0 60px rgba(245,158,11,0.4);
+    }
+
+    .header-si {
+      font-family: 'Noto Sans Sinhala', sans-serif;
+      color: var(--muted); font-size: .95rem; margin: 18px 0 10px;
+    }
+    .header-sub {
+      font-size: .88rem; color: var(--muted); max-width: 450px;
+    }
+
+    /* ── STICKY NAV / PROGRESS ── */
+    .progress-nav {
+      position: sticky; top: 16px; z-index: 100;
+      margin-bottom: 48px;
+    }
+    .progress-bar-wrap {
+      background: rgba(6,9,14,0.88);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--border-bright);
+      border-radius: 18px;
+      padding: 20px 28px;
+      display: flex; align-items: center; gap: 20px;
+    }
+    .progress-label { flex-shrink: 0; }
+    .progress-label .tag {
+      font-size: 9px; font-weight: 800; letter-spacing: .4em;
+      text-transform: uppercase; color: var(--amber);
+      display: block; margin-bottom: 4px;
+    }
+    #pText {
+      font-size: 2rem; font-weight: 800; font-style: italic;
+      letter-spacing: -2px; line-height: 1;
+    }
+    .bar-track {
+      flex: 1; height: 4px; background: var(--border-bright);
+      border-radius: 99px; overflow: hidden;
+    }
+    #pFill {
+      height: 100%; width: 0%;
+      background: var(--amber);
+      box-shadow: 0 0 16px var(--amber-glow);
+      border-radius: 99px;
+      transition: width 0.9s cubic-bezier(.23,1,.32,1);
+    }
+    .progress-counts { flex-shrink: 0; text-align: right; }
+    .progress-counts .checked-count { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+    .progress-counts .total-count { font-size: .75rem; color: var(--muted); }
+
+    /* ── TAB SWITCHER ── */
+    .tab-switcher {
+      display: flex; gap: 10px; margin-bottom: 40px;
+      justify-content: center;
+    }
+    .tab-btn {
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--muted); padding: 10px 26px;
+      border-radius: 99px; cursor: pointer;
+      font-family: inherit; font-size: .85rem; font-weight: 700;
+      letter-spacing: .04em; transition: all .3s;
+    }
+    .tab-btn:hover { border-color: var(--border-bright); color: var(--text); }
+    .tab-btn.active-paper1 { background: rgba(6,182,212,.1); border-color: var(--cyan); color: var(--cyan); }
+    .tab-btn.active-paper2 { background: rgba(168,85,247,.1); border-color: var(--purple); color: var(--purple); }
+    .tab-btn.active-all { background: rgba(245,158,11,.1); border-color: var(--amber); color: var(--amber); }
+
+    /* ── SECTION HEADERS ── */
+    .section-block { margin-bottom: 56px; }
+    .section-block[data-paper="p1"] { --accent: var(--cyan); --accent-glow: var(--cyan-glow); }
+    .section-block[data-paper="p2"] { --accent: var(--purple); --accent-glow: var(--purple-glow); }
+
+    .section-header {
+      display: flex; align-items: baseline; gap: 16px;
+      margin-bottom: 24px; padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .section-header::after {
+      content: ''; position: absolute; bottom: -1px; left: 0;
+      width: 60px; height: 2px;
+      background: var(--accent); border-radius: 2px;
+    }
+    .section-header h2 {
+      font-size: 1.8rem; font-weight: 800; font-style: italic;
+      color: var(--text); letter-spacing: -1px;
+    }
+    .section-header .si-label {
+      font-family: 'Noto Sans Sinhala', sans-serif;
+      font-size: .8rem; color: var(--muted);
+    }
+    .section-header .paper-badge {
+      margin-left: auto; font-size: .7rem; font-weight: 800;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: var(--accent); background: rgba(255,255,255,.04);
+      border: 1px solid var(--accent); padding: 4px 12px;
+      border-radius: 99px; white-space: nowrap;
+    }
+
+    /* ── UNIT GRID ── */
+    .group-label {
+      font-size: .7rem; font-weight: 800; letter-spacing: .35em;
+      text-transform: uppercase; color: var(--muted);
+      margin: 28px 0 12px;
+    }
+    .unit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+
+    /* ── UNIT CARD ── */
+    .unit-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      transition: all .3s cubic-bezier(.23,1,.32,1);
+      position: relative; overflow: hidden;
+    }
+    .unit-card::before {
+      content: ''; position: absolute;
+      left: 0; top: 0; bottom: 0; width: 3px;
+      background: var(--accent); border-radius: 3px 0 0 3px;
+      opacity: 0; transition: opacity .3s;
+    }
+    .unit-card:hover {
+      background: var(--card-hover);
+      border-color: rgba(255,255,255,0.12);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0,0,0,.4);
+    }
+    .unit-card:hover::before { opacity: 1; }
+    .unit-card.completed {
+      border-color: rgba(16,185,129,.15);
+      background: rgba(16,185,129,.03);
+    }
+    .unit-card.completed::before { opacity: 1; background: var(--green); }
+
+    .card-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+
+    /* Custom checkbox */
+    .cb {
+      appearance: none; flex-shrink: 0;
+      width: 20px; height: 20px; margin-top: 2px;
+      border: 1.5px solid var(--dim); border-radius: 5px;
+      cursor: pointer; position: relative; transition: all .25s;
+      background: transparent;
+    }
+    .cb:hover { border-color: var(--accent); }
+    .cb:checked {
+      background: var(--green); border-color: var(--green);
+      box-shadow: 0 0 12px rgba(16,185,129,.4);
+    }
+    .cb:checked::after {
+      content: ''; position: absolute;
+      left: 6px; top: 2px; width: 5px; height: 10px;
+      border: 2px solid #fff; border-top: none; border-left: none;
+      transform: rotate(45deg);
+    }
+
+    .card-info { flex: 1; }
+    .unit-num {
+      font-size: .68rem; font-weight: 700; letter-spacing: .2em;
+      color: var(--muted); margin-bottom: 3px;
+    }
+    .unit-en { font-size: 1rem; font-weight: 700; color: var(--text); line-height: 1.3; }
+    .unit-si {
+      font-family: 'Noto Sans Sinhala', sans-serif;
+      font-size: .8rem; color: var(--muted); margin-top: 2px;
+    }
+
+    /* Formula box */
+    .formula-box {
+      background: rgba(0,0,0,.35);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-family: var(--mono);
+      font-size: .78rem; color: #94a3b8;
+      white-space: pre-wrap; line-height: 1.55;
+    }
+    .formula-label {
+      font-size: .65rem; font-weight: 800; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 5px; display: block;
+    }
+
+    .section-block.hidden { display: none; }
+
+    /* ── STATS STRIP ── */
+    .stats-strip {
+      display: flex; flex-wrap: wrap; gap: 20px;
+      justify-content: center; margin-bottom: 60px;
+    }
+    .stat-box {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px 28px; text-align: center;
+      min-width: 140px;
+    }
+    .stat-val { font-size: 2rem; font-weight: 800; font-style: italic; letter-spacing: -2px; }
+    .stat-lbl { font-size: .72rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+    .stat-p1 .stat-val { color: var(--cyan); }
+    .stat-p2 .stat-val { color: var(--purple); }
+    .stat-total .stat-val { color: var(--amber); }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 32px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted); font-size: .85rem;
+    }
+    footer strong { color: var(--text); }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 99px; }
+
+    @media (max-width: 600px) {
+      h1 { letter-spacing: -2px; }
+      .unit-grid { grid-template-columns: 1fr; }
+      .progress-counts { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-layer">
+  <div class="grid-layer"></div>
+  <canvas id="physicsCanvas"></canvas>
+</div>
+
+<div class="container">
+
+  <header>
+    <div class="header-label">Physical Science Stream &nbsp;·&nbsp; <span>G.C.E. Advanced Level</span></div>
+    <h1>
+      <span class="word-al">ADVANCED LEVEL</span>
+      <span class="word-physics">PHYSICS</span>
+    </h1>
+    <p class="header-si">භෞතික විද්‍යාව — සම්පූර්ණ විෂය නිර්දේශය</p>
+    <p class="header-sub">Bilingual master syllabus · Key equations &amp; core concepts · 11 Units · 52 Sub-topics</p>
+  </header>
+
+  <div class="stats-strip">
+    <div class="stat-box stat-p1">
+      <div class="stat-val" id="statP1">0/24</div>
+      <div class="stat-lbl">Paper I Focus</div>
+    </div>
+    <div class="stat-box stat-p2">
+      <div class="stat-val" id="statP2">0/28</div>
+      <div class="stat-lbl">Paper II Focus</div>
+    </div>
+    <div class="stat-box stat-total">
+      <div class="stat-val" id="statTotal">0/52</div>
+      <div class="stat-lbl">Total Modules</div>
+    </div>
+  </div>
+
+  <div class="progress-nav">
+    <div class="progress-bar-wrap">
+      <div class="progress-label">
+        <span class="tag">Mastery</span>
+        <span id="pText">0%</span>
+      </div>
+      <div class="bar-track"><div id="pFill"></div></div>
+      <div class="progress-counts">
+        <div class="checked-count"><span id="cDone">0</span> done</div>
+        <div class="total-count">of 52 modules</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-switcher">
+    <button class="tab-btn active-all" data-tab="all">All Units</button>
+    <button class="tab-btn" data-tab="p1">Paper I Focus</button>
+    <button class="tab-btn" data-tab="p2">Paper II Focus</button>
+  </div>
+
+  <div class="section-block" data-paper="p1">
+    <div class="section-header">
+      <h2>Foundational &amp; Field Physics</h2>
+      <span class="si-label">පදනම් සහ ක්ෂේත්‍ර භෞතික විද්‍යාව</span>
+      <span class="paper-badge">Paper I Focus</span>
+    </div>
+
+    <div class="group-label">Unit 01: Measurement &nbsp;|&nbsp; මිනුම්</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p1">
+          <div class="card-info">
+            <div class="unit-num">Module 01</div>
+            <div class="unit-en">Units &amp; Dimensions</div>
+            <div class="unit-si">ඒකක සහ මාන</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">[Force] = MLT⁻²
+[Work] = ML²T⁻²
+Dimensional homogeneity checks</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p1">
+          <div class="card-info">
+            <div class="unit-num">Module 02</div>
+            <div class="unit-en">Measuring Instruments</div>
+            <div class="unit-si">මිනුම් උපකරණ</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Least Count (LC) = Pitch / No. of divisions
+Zero Error adjustments
+Micrometer, Vernier, Spherometer</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p1">
+          <div class="card-info">
+            <div class="unit-num">Module 03</div>
+            <div class="unit-en">Error Analysis &amp; Vectors</div>
+            <div class="unit-si">දෝෂ සහ දෛශික</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Frac Error (ΔZ/Z) = ΔA/A + ΔB/B
+Resultant R = √(A² + B² + 2AB cosθ)</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 05: Gravitational Field &nbsp;|&nbsp; ගුරුත්වාකර්ෂණ ක්ෂේත්‍ර</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p1">
+          <div class="card-info">
+            <div class="unit-num">Module 04</div>
+            <div class="unit-en">Gravitational Force &amp; Field</div>
+            <div class="unit-si">ගුරුත්වාකර්ෂණ බලය සහ ක්ෂේත්‍රය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">F = G·(m₁m₂)/r²
+Field Intensity g = GM/R²
+g_h = g(1 - 2h/R)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p1">
+          <div class="card-info">
+            <div class="unit-num">Module 05</div>
+            <div class="unit-en">Gravitational Potential &amp; Energy</div>
+            <div class="unit-si">ගුරුත්වාකර්ෂණ විභවය සහ ශක්තිය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Potential V = -GM/r
+U = -GMm/r
+Escape Velocity v_e = √(2gR)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p1">
+          <div class="card-info">
+            <div class="unit-num">Module 06</div>
+            <div class="unit-en">Satellite Motion</div>
+            <div class="unit-si">උපග්‍රහ චලිතය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Orbital Speed v = √(GM/r)
+T² = (4π²/GM)·r³
+Geostationary Orbits: T = 24 hrs</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 06: Electrostatic Field &nbsp;|&nbsp; ස්ථිති විද්‍යුත් ක්ෂේත්‍ර</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p1">
+          <div class="card-info">
+            <div class="unit-num">Module 07</div>
+            <div class="unit-en">Coulomb's Law &amp; Field</div>
+            <div class="unit-si">කුලෝම් නියමය සහ විද්‍යුත් ක්ෂේත්‍ර</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">F = (1/4πε)·(q₁q₂/r²)
+E = F/q = Q/(4πε r²)
+Electric Dipole Moment p = q·d</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p1">
+          <div class="card-info">
+            <div class="unit-num">Module 08</div>
+            <div class="unit-en">Gauss's Law &amp; Potential</div>
+            <div class="unit-si">ගවුස්ගේ ප්‍රමේයය සහ විභවය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Φ = ∮ E·dA = Q_enc / ε₀
+V = Q / (4πε₀ r)
+E = -dV/dx</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p1">
+          <div class="card-info">
+            <div class="unit-num">Module 09</div>
+            <div class="unit-en">Capacitors &amp; Dielectrics</div>
+            <div class="unit-si">ධාරිතාත්‍ර සහ මාධ්‍ය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">C = εA/d
+Stored Energy U = ½CV² = ½Q²/C
+Series: 1/C_eq = Σ(1/C_i)</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 07: Current Electricity &nbsp;|&nbsp; ධාරා විද්‍යුතය</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p1">
+          <div class="card-info">
+            <div class="unit-num">Module 10</div>
+            <div class="unit-en">Ohm's Law &amp; Resistance</div>
+            <div class="unit-si">ඕම්ගේ නියමය සහ ප්‍රතිරෝධය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">V = IR,  R = ρL/A
+Temperature dependence: R_T = R₀(1 + αΔT)
+Power P = VI = I²R</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p1">
+          <div class="card-info">
+            <div class="unit-num">Module 11</div>
+            <div class="unit-en">Kirchhoff's Laws &amp; EMF</div>
+            <div class="unit-si">කර්චෝෆ්ගේ නියම සහ වි.ගා.බ.</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">1st Law: ΣI = 0 (Junction)
+2nd Law: ΣE = ΣIR (Loop)
+Terminal Voltage V = E - Ir</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p1">
+          <div class="card-info">
+            <div class="unit-num">Module 12</div>
+            <div class="unit-en">Measuring Instruments</div>
+            <div class="unit-si">මිනුම් පරිපථ</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Potentiometer: E₁/E₂ = L₁/L₂
+Wheatstone Bridge: P/Q = R/S
+Meter Bridge applications</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 11: Matter &amp; Radiation &nbsp;|&nbsp; ද්‍රව්‍ය හා විකිරණ</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p1">
+          <div class="card-info">
+            <div class="unit-num">Module 13</div>
+            <div class="unit-en">Photoelectric Effect</div>
+            <div class="unit-si">ප්‍රකාශ විද්‍යුත් ආචරණය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">E = hf = Φ + ½mv_max²
+eV₀ = hf - Φ
+Threshold frequency f₀ = Φ/h</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p1">
+          <div class="card-info">
+            <div class="unit-num">Module 14</div>
+            <div class="unit-en">Wave-Particle Duality &amp; X-Rays</div>
+            <div class="unit-si">තරංග-අංශු ද්වෛතතාව සහ X-කිරණ</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">de Broglie λ = h/p = h/(mv)
+X-ray λ_min = hc / (eV)
+Bragg's Law: 2d sinθ = nλ</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p1">
+          <div class="card-info">
+            <div class="unit-num">Module 15</div>
+            <div class="unit-en">Radioactivity &amp; Nuclear Energy</div>
+            <div class="unit-si">විකිරණශීලීතාව සහ න්‍යෂ්ටික භෞතික විද්‍යාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">N = N₀ e^(-λt)
+Half-life T_(1/2) = ln(2)/λ = 0.693/λ
+E = Δm·c²</div>
+      </div>
+    </div>
+
+  </div><div class="section-block" data-paper="p2">
+    <div class="section-header">
+      <h2>Applied &amp; Extended Physics</h2>
+      <span class="si-label">ව්‍යවහාරික හා විස්තීරණ භෞතික විද්‍යාව</span>
+      <span class="paper-badge">Paper II Focus</span>
+    </div>
+
+    <div class="group-label">Unit 02: Mechanics &nbsp;|&nbsp; යාන්ත්‍ර විද්‍යාව</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 16</div>
+            <div class="unit-en">Linear Kinematics</div>
+            <div class="unit-si">සරල රේඛීය චලිතය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">v = u + at,  s = ut + ½at²
+v² = u² + 2as
+v-t graph area = Displacement</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 17</div>
+            <div class="unit-en">Newton's Laws &amp; Momentum</div>
+            <div class="unit-si">නිව්ටන්ගේ නියම සහ ගම්‍යතාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">F_net = ma = dp/dt
+Impulse J = ∫F dt = Δp
+Conservation of linear momentum</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 18</div>
+            <div class="unit-en">Work, Energy &amp; Power</div>
+            <div class="unit-si">කාර්යය, ශක්තිය සහ බලය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">W = F·s cosθ
+E_k = ½mv²,  E_p = mgh
+Power P = dW/dt = F·v</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 19</div>
+            <div class="unit-en">Rotational Dynamics</div>
+            <div class="unit-si">භ්‍රමණ චලිතය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Torque τ = Iα
+Angular Momentum L = Iω
+Rotational E_k = ½Iω²</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 20</div>
+            <div class="unit-en">Fluid Hydrostatics</div>
+            <div class="unit-si">ද්‍රවස්ථිති විද්‍යාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Pressure P = hρg
+Archimedes: U = Vρg
+Upthrust = weight of displaced fluid</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 21</div>
+            <div class="unit-en">Fluid Dynamics</div>
+            <div class="unit-si">තරල ගති විද්‍යාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Continuity: A₁v₁ = A₂v₂
+Bernoulli: P + ½ρv² + ρgh = constant
+Venturi meter applications</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 03: Oscillations &amp; Waves &nbsp;|&nbsp; ආන්දෝලන හා තරංග</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 22</div>
+            <div class="unit-en">Simple Harmonic Motion</div>
+            <div class="unit-si">සරල අනුවර්තී චලිතය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">a = -ω²x
+x = A sin(ωt + φ)
+v = ω√(A² - x²)
+Period T = 2π/ω</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 23</div>
+            <div class="unit-en">Wave Motion &amp; Sound</div>
+            <div class="unit-si">තරංග චලිතය සහ ශබ්දය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">v = fλ
+Intensity I = P / (4πr²)
+Speed of sound in gas: v = √(γP/ρ)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 24</div>
+            <div class="unit-en">Doppler Effect &amp; Resonance</div>
+            <div class="unit-si">ඩොප්ලර් ආචරණය සහ අනුනාදය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">f' = f · (v ± v_observer)/(v ∓ v_source)
+Beats: f_beat = |f₁ - f₂|
+Open pipe: f = nv/(2L)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 25</div>
+            <div class="unit-en">Geometrical Optics</div>
+            <div class="unit-si">ජ්‍යාමිතික ප්‍රකාශ විද්‍යාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Snell's Law: n₁ sinθ₁ = n₂ sinθ₂
+Lens Formula: 1/f = 1/v - 1/u
+Mag M = v/u</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 26</div>
+            <div class="unit-en">Physical Wave Optics</div>
+            <div class="unit-si">භෞතික තරංග ප්‍රකාශ විද්‍යාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Double slit fringe width: y = λD/d
+Diffraction grating: d sinθ = nλ
+Brewster's Law: tan i_p = n</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 04: Thermal Physics &nbsp;|&nbsp; තාප භෞතික විද්‍යාව</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 27</div>
+            <div class="unit-en">Thermometry &amp; Calorimetry</div>
+            <div class="unit-si">උෂ්ණත්වමිතිය සහ කැලරිමිතිය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">θ = [(X_θ - X₀)/(X₁₀₀ - X₀)] × 100
+Q = mcΔθ
+Latent Heat Q = mL</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 28</div>
+            <div class="unit-en">Thermal Expansion</div>
+            <div class="unit-si">තාප ප්‍රසාරණය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Linear: L_T = L₀(1 + αΔT)
+Area: β ≈ 2α,  Volume: γ ≈ 3α
+Apparent expansion of liquids</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 29</div>
+            <div class="unit-en">Kinetic Theory of Gases</div>
+            <div class="unit-si">වායුවල අණුක චලිත වාදය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">PV = nRT = N k_B T
+P = ⅓ ρ (c_rms)²
+Average E_k = ⅜ k_B T</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 30</div>
+            <div class="unit-en">Heat Conduction &amp; Radiation</div>
+            <div class="unit-si">තාප සන්නයනය සහ විකිරණය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Conduction: dQ/dt = kA(T₁ - T₂)/L
+Stefan-Boltzmann: P = eσA T⁴
+Newton's Law of Cooling</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 08: Electromagnetism &nbsp;|&nbsp; විද්‍යුත් චුම්බකත්වය</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 31</div>
+            <div class="unit-en">Magnetic Fields &amp; Forces</div>
+            <div class="unit-si">චුම්බක ක්ෂේත්‍ර සහ බල</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Lorentz Force: F = q(v × B)
+Force on wire: F = I L B sinθ
+Biot-Savart Law: dB = (μ₀/4π)·(I dl sinθ / r²)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 32</div>
+            <div class="unit-en">Electromagnetic Induction</div>
+            <div class="unit-si">විද්‍යුත් චුම්බක ප්‍රේරණය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Faraday's Law: E = -N (dΦ/dt)
+Motional EMF: E = Blv
+Lenz's Law (conservation of energy)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 33</div>
+            <div class="unit-en">Alternating Current (AC)</div>
+            <div class="unit-si">ප්‍රත්‍යාවර්ත ධාරාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">V_rms = V₀ / √2
+Impedance Z = √(R² + (X_L - X_C)²)
+Resonance: f₀ = 1 / (2π√(LC))</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 09: Electronics &nbsp;|&nbsp; ඉලෙක්ට්‍රොනික විද්‍යාව</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 34</div>
+            <div class="unit-en">Diodes &amp; Rectification</div>
+            <div class="unit-si">ඩයෝඩ සහ සෘජුකාරකය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">p-n junction depletion layer
+Half-wave / Full-wave rectifiers
+Zener Diode voltage regulation</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 35</div>
+            <div class="unit-en">Transistors (BJT)</div>
+            <div class="unit-si">ට්‍රාන්සිස්ටර</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">I_E = I_B + I_C
+Current Gain β = I_C / I_B
+Switching &amp; amplification modes</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 36</div>
+            <div class="unit-en">Operational Amplifiers</div>
+            <div class="unit-si">මෙහෙයුම් වර්ධක</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Inverting Gain: A_v = -R_f / R_in
+Non-inverting Gain: A_v = 1 + (R_f / R_in)
+Ideal Op-Amp properties</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 37</div>
+            <div class="unit-en">Digital Electronics</div>
+            <div class="unit-si">ඩිජිටල් ඉලෙක්ට්‍රොනික විද්‍යාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Logic Gates: AND, OR, NOT, NAND, NOR
+Boolean Algebra: A + Ā = 1, A·Ā = 0
+De Morgan's Theorems</div>
+      </div>
+    </div>
+
+    <div class="group-label">Unit 10: Mechanical Properties of Matter &nbsp;|&nbsp; ද්‍රව්‍යවල යාන්ත්‍රික ගුණ</div>
+    <div class="unit-grid">
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 38</div>
+            <div class="unit-en">Elasticity &amp; Young's Modulus</div>
+            <div class="unit-si">ප්‍රත්‍යස්ථතාව සහ යං මාඩියුලය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">Stress σ = F/A, Strain ε = ΔL/L
+Young's Modulus Y = σ/ε = (FL)/(AΔL)
+Energy density = ½ × Stress × Strain</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 39</div>
+            <div class="unit-en">Surface Tension</div>
+            <div class="unit-si">පෘෂ්ඨික ආතතිය</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">γ = F / L
+Excess pressure inside drop: ΔP = 2γ/r
+Excess pressure inside bubble: ΔP = 4γ/r
+Capillary rise h = (2γ cosθ)/(rρg)</div>
+      </div>
+
+      <div class="unit-card">
+        <div class="card-top">
+          <input type="checkbox" class="cb task" data-paper="p2">
+          <div class="card-info">
+            <div class="unit-num">Module 40</div>
+            <div class="unit-en">Viscosity</div>
+            <div class="unit-si">දුස්ස්‍රාවීතාව</div>
+          </div>
+        </div>
+        <span class="formula-label">Key Formula / Concept</span>
+        <div class="formula-box">F = η A (dv/dx)
+Stokes' Law: F = 6πηrv
+Terminal Velocity v_t = ⅔ r²g(ρ - σ) / η</div>
+      </div>
+    </div>
+
+  </div><footer>
+    <strong>A/L Physics — Master Reference</strong><br>
+    Physical Science Stream · 11 Units · 40 Core Modules · Papers I &amp; II
+  </footer>
+
+</div>
+
+<script>
+  /* ── CANVAS BACKGROUND ANIMATION ── */
+  const canvas = document.getElementById('physicsCanvas');
+  const ctx = canvas.getContext('2d');
+  const symbols = ['E=mc²', 'F=ma', 'λ', 'Ω', 'μ₀', 'ε₀', '∫', 'Ψ', 'ℏ', 'ν', 'Φ', 'B', 'ρ', 'σ', 'τ', 'θ', 'Δx'];
+  let W, H, particles = [];
+
+  function initCanvas() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    particles = Array.from({length: 45}, () => ({
+      x: Math.random()*W, y: Math.random()*H,
+      s: symbols[Math.floor(Math.random()*symbols.length)],
+      vx: (Math.random()-.5)*.25,
+      vy: (Math.random()-.5)*.25,
+      op: Math.random()*.12 + .04,
+      size: Math.random()*6 + 11
+    }));
+  }
+
+  function drawCanvas() {
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p => {
+      ctx.font = `${p.size}px JetBrains Mono, monospace`;
+      ctx.fillStyle = `rgba(245,158,11,${p.op})`;
+      ctx.fillText(p.s, p.x, p.y);
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < -40 || p.x > W+40) p.vx *= -1;
+      if(p.y < -40 || p.y > H+40) p.vy *= -1;
+    });
+    requestAnimationFrame(drawCanvas);
+  }
+
+  window.addEventListener('resize', initCanvas);
+  initCanvas(); drawCanvas();
+
+  /* ── PROGRESS TRACKER ── */
+  function updateProgress() {
+    const allTasks = document.querySelectorAll('.task');
+    const p1Tasks  = document.querySelectorAll('.task[data-paper="p1"]');
+    const p2Tasks  = document.querySelectorAll('.task[data-paper="p2"]');
+
+    const total     = allTasks.length;
+    const done      = [...allTasks].filter(t => t.checked).length;
+    const p1Done    = [...p1Tasks].filter(t => t.checked).length;
+    const p2Done    = [...p2Tasks].filter(t => t.checked).length;
+    const pct       = Math.round((done / total) * 100) || 0;
+
+    document.getElementById('pFill').style.width = pct + '%';
+    document.getElementById('pText').textContent = pct + '%';
+    document.getElementById('cDone').textContent = done;
+    document.getElementById('statP1').textContent    = `${p1Done}/${p1Tasks.length}`;
+    document.getElementById('statP2').textContent    = `${p2Done}/${p2Tasks.length}`;
+    document.getElementById('statTotal').textContent = `${done}/${total}`;
+
+    document.querySelectorAll('.task').forEach(cb => {
+      cb.closest('.unit-card').classList.toggle('completed', cb.checked);
+    });
+
+    const state = [...allTasks].map(t => t.checked);
+    try { localStorage.setItem('physics_progress', JSON.stringify(state)); } catch(e){}
+  }
+
+  try {
+    const saved = JSON.parse(localStorage.getItem('physics_progress') || '[]');
+    document.querySelectorAll('.task').forEach((cb, i) => {
+      if(saved[i]) cb.checked = true;
+    });
+  } catch(e){}
+
+  document.querySelectorAll('.task').forEach(cb => cb.addEventListener('change', updateProgress));
+  updateProgress();
+
+  /* ── TAB SWITCHER ── */
+  const tabs   = document.querySelectorAll('.tab-btn');
+  const blocks = document.querySelectorAll('.section-block');
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(b => b.className = 'tab-btn');
+      const tab = btn.dataset.tab;
+      if(tab === 'all')    btn.classList.add('active-all');
+      if(tab === 'p1')     btn.classList.add('active-paper1');
+      if(tab === 'p2')     btn.classList.add('active-paper2');
+
+      blocks.forEach(bl => {
+        if(tab === 'all') bl.classList.remove('hidden');
+        else bl.classList.toggle('hidden', bl.dataset.paper !== tab);
+      });
+    });
+  });
+</script>
+</body>
+</html>

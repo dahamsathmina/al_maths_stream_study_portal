@@ -1,8 +1,727 @@
-<html>
-  <head>
-    <title>hi</title>
-  </head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="https://img.icons8.com/?size=100&id=QYMxOoth8foY&format=png&color=000000">
+  <title>A/L Master Study Portal — Developer Edition</title>
+
+  <meta name="description" content="Access comprehensive Advanced Level (A/L) study references and notes for Combined Maths, Physics, Chemistry, and Information Technology (IT) in a sleek GitHub-themed developer portal." />
+  <meta name="keywords" content="A/L Master Study Portal, Advanced Level Sri Lanka, Combined Maths, Physics notes, Chemistry notes, Information Technology (IT), ODSD Labs, GitHub Dashboard, A/L revision" />
+  <meta name="author" content="Daham Sathmina (ODSD Labs)" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="#" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="#" />
+  <meta property="og:title" content="A/L Master Study Portal — ODSD Labs Developer Edition" />
+  <meta property="og:description" content="Access comprehensive Advanced Level study references for Combined Maths, Physics, Chemistry, and Information Technology (IT) in a sleek GitHub-themed developer portal." />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* GitHub Dark Canvas Theme */
+      --gh-canvas: #010409;
+      --gh-border: rgba(255, 255, 255, 0.08);
+      --gh-border-bright: rgba(255, 255, 255, 0.15);
+      --gh-text: #e6edf3;
+      --gh-text-muted: #848d97;
+      --gh-link: #2f81f7;
+      
+      /* Windows 11 Acrylic Blur Navigation Backgrounds */
+      --win-blur-bg: rgba(0, 0, 0, 0.75);
+      
+      /* Subject Accent Colors */
+      --maths: #f85149;
+      --physics: #d29922;
+      --chemistry: #bc8cff;
+      --ict: #bc8cff;
+      
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── NEXT-LEVEL QUANTUM HUD CURSOR ── */
+    @media (hover: hover) and (pointer: fine) {
+      body, a, button, iframe, input { cursor: none !important; }
+    }
+
+    .cursor-dot, .cursor-ring, .cursor-bracket {
+      position: fixed;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+    }
+
+    .cursor-dot {
+      width: 6px;
+      height: 6px;
+      background-color: var(--gh-link);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--gh-link), 0 0 4px #ffffff;
+      transition: background-color 0.2s, transform 0.2s;
+    }
+
+    .cursor-ring {
+      width: 40px;
+      height: 40px;
+      border: 1px dashed rgba(47, 129, 247, 0.5);
+      border-radius: 50%;
+      transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s, background 0.3s;
+      background: rgba(47, 129, 247, 0.02);
+      animation: hudRotate 12s linear infinite;
+    }
+
+    @keyframes hudRotate {
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .cursor-ring.active {
+      width: 60px;
+      height: 60px;
+      border: 1px solid #3fb950;
+      border-style: solid;
+      background: rgba(63, 185, 80, 0.08);
+      box-shadow: 0 0 20px rgba(63, 185, 80, 0.3);
+      animation: hudRotateFast 4s linear infinite;
+    }
+
+    @keyframes hudRotateFast {
+      to { transform: translate(-50%, -50%) rotate(-360deg); }
+    }
+
+    /* Quantum Particle Spark */
+    .cursor-particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 99998;
+      width: 4px;
+      height: 4px;
+      background-color: var(--gh-link);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--gh-link);
+      animation: particleFade 0.6s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+    }
+
+    @keyframes particleFade {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.2);
+      }
+    }
+
+    /* EMP Shockwave Ripple on Click */
+    .emp-wave {
+      position: fixed;
+      pointer-events: none;
+      z-index: 99997;
+      border: 2px solid var(--gh-link);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      animation: empExpand 0.5s cubic-bezier(0.0, 0.9, 0.3, 1) forwards;
+    }
+
+    @keyframes empExpand {
+      to {
+        width: 150px;
+        height: 150px;
+        opacity: 0;
+        border-color: #3fb950;
+      }
+    }
+
+    @media (hover: none) {
+      .cursor-dot, .cursor-ring { display: none; }
+    }
+
+    /* ── CUSTOM GITHUB SCROLLBAR ── */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--gh-canvas);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #30363d;
+      border-radius: 5px;
+      border: 2px solid var(--gh-canvas);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #8b949e;
+    }
+
+    html, body {
+      background-color: var(--gh-canvas);
+      color: var(--gh-text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* ── STICKY WINDOWS 11 ACRYLIC BLUR HEADER ── */
+    .gh-header {
+      background-color: var(--win-blur-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--gh-border);
+      height: 64px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .gh-nav-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .nav-logo {
+      height: 28px;
+      width: auto;
+      object-fit: contain;
+      background: transparent;
+      border: none;
+    }
+
+    .gh-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--gh-text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .gh-title span {
+      color: var(--gh-text-muted);
+      font-weight: 400;
+    }
+
+    .gh-status-badge {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--gh-border);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 0.75rem;
+      color: var(--gh-text-muted);
+      font-family: var(--font-mono);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .gh-status-dot {
+      width: 7px;
+      height: 7px;
+      background-color: #3fb950;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #3fb950;
+    }
+
+    /* ── STICKY SUB-NAV BAR ── */
+    .gh-sub-nav {
+      background-color: rgba(1, 0, 1, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--gh-border);
+      padding: 0 24px;
+      display: flex;
+      gap: 8px;
+      position: sticky;
+      top: 64px;
+      z-index: 99;
+      overflow-x: auto;
+    }
+
+    .gh-tab {
+      background: transparent;
+      border: none;
+      color: var(--gh-text-muted);
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      white-space: nowrap;
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .gh-tab:hover {
+      color: var(--gh-text);
+      transform: translateY(-1px);
+    }
+
+    .gh-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--gh-border);
+      transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .gh-tab.active {
+      color: var(--gh-text);
+      font-weight: 600;
+    }
+
+    .gh-tab.active .gh-dot {
+      background-color: var(--active-color);
+      box-shadow: 0 0 10px var(--active-color);
+    }
+
+    .gh-tab::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: var(--active-color);
+      transform: scaleX(0);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .gh-tab.active::after {
+      transform: scaleX(1);
+    }
+
+    /* ── DYNAMIC SUBJECT MOVE & SLIDE ANIMATION ── */
+    @keyframes subjectMoveAnimation {
+      0% {
+        opacity: 0;
+        transform: translateY(24px) scale(0.985);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .gh-workspace {
+      flex: 1;
+      width: 100%;
+      background-color: var(--gh-canvas);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      animation: subjectMoveAnimation 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    iframe {
+      width: 100%;
+      min-height: 100vh;
+      border: none;
+      display: block;
+      background-color: var(--gh-canvas);
+      overflow: hidden;
+    }
+
+    /* Spinner Loader Overlay */
+    .gh-loading {
+      position: absolute;
+      inset: 0;
+      background-color: var(--gh-canvas);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .gh-workspace.loading .gh-loading {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .gh-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--gh-border);
+      border-top-color: var(--gh-link);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .gh-loading-text {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--gh-text-muted);
+    }
+
+    /* ── SCIENTIFIC FOOTER WITH FULL MOBILE RESPONSIVENESS ── */
+    .gh-footer {
+      background-color: #000000;
+      border-top: 1px solid var(--gh-border);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      font-size: 0.75rem;
+      color: var(--gh-text-muted);
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+      z-index: 100;
+    }
+
+    .footer-main-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-logo {
+      height: 30px;
+      width: auto;
+      padding-right: 10px;
+      object-fit: contain;
+      background: transparent;
+      border: none;
+    }
+
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+      list-style: none;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--gh-text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--gh-link);
+      text-decoration: underline;
+    }
+
+    .back-to-top-btn {
+      background: rgba(22, 27, 34, 0.85);
+      border: 1px solid var(--gh-border-bright);
+      color: var(--gh-text);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .back-to-top-btn:hover {
+      background: #30363d;
+      border-color: var(--gh-link);
+      color: var(--gh-link);
+      transform: translateY(-2px);
+    }
+
+    .footer-newsletter-row {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      border-top: 1px solid var(--gh-border);
+      padding-top: 14px;
+      width: 100%;
+    }
+
+    .news_letter {
+      font-size: 0.70rem;
+      padding-left: 10px;
+      color: var(--gh-text);
+      font-family: var(--font-mono);
+      letter-spacing: 0.8px;
+      border-left: 3px #3fb950 solid;
+      text-transform: uppercase;
+    }
+
+    .news-quote {
+      color: var(--gh-text-muted);
+      font-style: italic;
+      font-size: 0.75rem;
+      padding-left: 13px;
+      word-break: break-word;
+    }
+
+    @media (max-width: 900px) {
+      .gh-header { flex-direction: column; height: auto; padding: 12px; gap: 10px; }
+      .gh-sub-nav { top: auto; padding: 0 12px; }
+      .gh-status-badge { display: none; }
+      .footer-main-row { flex-direction: column; gap: 14px; text-align: center; align-items: center; }
+      .footer-left, .footer-right { flex-direction: column; gap: 12px; align-items: center; width: 100%; }
+      .footer-links { justify-content: center; }
+      .footer-newsletter-row { align-items: flex-start; text-align: left; }
+    }
+  </style>
+</head>
 <body>
-  <p>Hi there!</p>
-</body>  
+  
+
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <header class="gh-header">
+    <div class="gh-nav-left">
+      <img src="/src/assets/icons/ODSDLabs_Dark_Original_Icon.png" alt="ODSD Labs Dark Logo" class="nav-logo" />
+      <div class="gh-title">
+        <span>odsd-labs</span> / <strong>a/l-master-reference</strong>
+      </div>
+    </div>
+    
+    <div class="gh-status-badge">
+      <span class="gh-status-dot"></span> node_active: <span id="activeYearBadge"></span>.master
+    </div>
+  </header>
+
+  <nav class="gh-sub-nav">
+    <button class="gh-tab" 
+            data-color="var(--maths)" 
+            onclick="loadSubject('CombinedMaths_Master.html', this)">
+      <span class="gh-dot"></span> Combined Maths
+    </button>
+
+    <button class="gh-tab" 
+            data-color="var(--physics)" 
+            onclick="loadSubject('Physics_Master.html', this)">
+      <span class="gh-dot"></span> Physics
+    </button>
+
+    <button class="gh-tab" 
+            data-color="var(--ict)" 
+            onclick="loadSubject('Information_Technology.html', this)">
+      <span class="gh-dot"></span> Information Technology
+    </button>
+
+    <button class="gh-tab" 
+            data-color="var(--chemistry)" 
+            onclick="loadSubject('Chemistry_Master.html', this)">
+      <span class="gh-dot"></span> Chemistry
+    </button>
+  </nav>
+
+  <main class="gh-workspace" id="workspace">
+    <div class="gh-loading">
+      <div class="gh-spinner"></div>
+      <div class="gh-loading-text">Synchronizing repository buffers...</div>
+    </div>
+    <iframe id="mainFrame" src="" title="Repository Code Viewer" onload="syncIframeHeight()"></iframe>
+  </main>
+
+  <footer class="gh-footer">
+    <div class="footer-main-row">
+      <div class="footer-left">
+        <div class="footer-brand">
+          <img src="/src/assets/icons/ODSDLabs_Original_Icon.png" alt="ODSD Labs Logo" class="footer-logo" />
+          <span>© <span id="currentYear"></span> Daham Sathmina (ODSD Labs). All Rights Reserved.</span>
+        </div>
+      </div>
+
+      <div class="footer-right">
+        <ul class="footer-links">
+          <li><a href="#" onclick="alert('System Status: Compilation scripts operational. Buffer memory stable.'); return false;">Telemetry</a></li>
+          <li><a href="#" onclick="alert('Physical Constants Reference:\n• c = 2.998 × 10⁸ m/s\n• h = 6.626 × 10⁻³⁴ J·s\n• N_A = 6.022 × 10²³ mol⁻¹'); return false;">Constants</a></li>
+          <li><a href="https://github.com/DahamSathmina/al_master_study_portal" target="_blank">Docs</a></li>
+        </ul>
+        <button class="back-to-top-btn" onclick="scrollToTop()">
+          <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M3.22 10.97a.75.75 0 0 1 1.06 0L8 7.22l3.72 3.75a.751.751 0 0 1 1.042-.018.751.751 0 0 1 .018 1.042l-4.25 4.25a.75.75 0 0 1-1.06 0L3.22 12.03a.75.75 0 0 1 0-1.06Z" transform="rotate(180 8 8)"/></svg>
+          Top
+        </button>
+      </div>
+    </div>
+
+    <div class="footer-newsletter-row">
+      <strong class="news_letter">THE DEVELOPER NEWSLETTER</strong>
+      <p class="news-quote">"let's suffer with aim, purpose turns pressure into progress"</p>
+    </div>
+  </footer>
+
+  <script>
+    // ── NEXT-LEVEL QUANTUM HUD & PARTICLE ENGINE ──
+    const cursorDot = document.getElementById('cursorDot');
+    const cursorRing = document.getElementById('cursorRing');
+    
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let ringX = mouseX;
+    let ringY = mouseY;
+    let lastParticleTime = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursorDot.style.left = `${mouseX}px`;
+      cursorDot.style.top = `${mouseY}px`;
+
+      // Spawn quantum particle stream at throttled intervals
+      const now = Date.now();
+      if (now - lastParticleTime > 40) {
+        spawnQuantumParticle(mouseX, mouseY);
+        lastParticleTime = now;
+      }
+    });
+
+    // Click EMP Shockwave Effect
+    window.addEventListener('click', (e) => {
+      const wave = document.createElement('div');
+      wave.className = 'emp-wave';
+      wave.style.left = `${e.clientX}px`;
+      wave.style.top = `${e.clientY}px`;
+      document.body.appendChild(wave);
+      setTimeout(() => wave.remove(), 500);
+    });
+
+    function spawnQuantumParticle(x, y) {
+      const particle = document.createElement('div');
+      particle.className = 'cursor-particle';
+      particle.style.left = `${x}px`;
+      particle.style.top = `${y}px`;
+      
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 10 + Math.random() * 20;
+      particle.style.setProperty('--dx', `${Math.cos(angle) * speed}px`);
+      particle.style.setProperty('--dy', `${Math.sin(angle) * speed}px`);
+      
+      document.body.appendChild(particle);
+      setTimeout(() => particle.remove(), 600);
+    }
+
+    function renderQuantumCursor() {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+      cursorRing.style.left = `${ringX}px`;
+      cursorRing.style.top = `${ringY}px`;
+      requestAnimationFrame(renderQuantumCursor);
+    }
+    renderQuantumCursor();
+
+    function initCursorHover() {
+      const interactives = document.querySelectorAll('a, button, .gh-tab');
+      interactives.forEach(el => {
+        el.addEventListener('mouseenter', () => cursorRing.classList.add('active'));
+        el.addEventListener('mouseleave', () => cursorRing.classList.remove('active'));
+      });
+    }
+
+    // Dynamically set current year
+    const currentYear = new Date().getFullYear();
+    document.getElementById('currentYear').textContent = currentYear;
+    document.getElementById('activeYearBadge').textContent = currentYear;
+
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
+    const workspace = document.getElementById('workspace');
+    const mainFrame = document.getElementById('mainFrame');
+    const tabs = document.querySelectorAll('.gh-tab');
+
+    function loadSubject(fileName, activeTab) {
+      workspace.classList.add('loading');
+      
+      workspace.style.animation = 'none';
+      workspace.offsetHeight; 
+      workspace.style.animation = 'subjectMoveAnimation 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+
+      mainFrame.src = fileName;
+
+      tabs.forEach(tab => {
+        tab.classList.remove('active');
+        tab.style.removeProperty('--active-color');
+      });
+
+      activeTab.classList.add('active');
+      activeTab.style.setProperty('--active-color', activeTab.getAttribute('data-color'));
+
+      try {
+        localStorage.setItem('gh_portal_last_file', fileName);
+      } catch (e) {}
+    }
+
+    function syncIframeHeight() {
+      try {
+        const innerDoc = mainFrame.contentDocument || mainFrame.contentWindow.document;
+        if (innerDoc && innerDoc.body) {
+          const height = innerDoc.body.scrollHeight;
+          mainFrame.style.height = (height + 60) + 'px';
+        }
+      } catch (e) {}
+
+      setTimeout(() => {
+        workspace.classList.remove('loading');
+      }, 150);
+    }
+
+    window.onload = () => {
+      let lastFile = 'CombinedMaths_Master.html';
+      try {
+        const saved = localStorage.getItem('gh_portal_last_file');
+        if (saved) lastFile = saved;
+      } catch (e) {}
+
+      let defaultTab = document.querySelector(`.gh-tab[onclick*="${lastFile}"]`);
+      if (!defaultTab) defaultTab = tabs[0];
+      
+      loadSubject(lastFile, defaultTab);
+      initCursorHover();
+    };
+  </script>
+</body>
 </html>
