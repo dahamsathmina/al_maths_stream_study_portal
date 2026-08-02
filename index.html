@@ -10,10 +10,10 @@
   <meta name="keywords" content="A/L Master Study Portal, Advanced Level Sri Lanka, Combined Maths, Physics notes, Chemistry notes, Information Technology (IT), ODSD Labs, GitHub Dashboard, A/L revision" />
   <meta name="author" content="Daham Sathmina (ODSD Labs)" />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://github.com/DahamSathmina/al_maths_stream_study_portal" />
+  <link rel="canonical" href="https://github.com/dahamsathmina/al_maths_stream_study_portal" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://github.com/DahamSathmina/al_maths_stream_study_portal" />
+  <meta property="og:url" content="https://github.com/dahamsathmina/al_maths_stream_study_portal" />
   <meta property="og:title" content="A/L Master Study Portal — ODSD Labs Developer Edition" />
   <meta property="og:description" content="Access comprehensive Advanced Level study references for Combined Maths, Physics, Chemistry, and Information Technology (IT) in a sleek GitHub-themed developer portal." />
 
@@ -21,7 +21,7 @@
   
   <style>
     :root {
-      /* GitHub Dark Canvas Theme */
+      /* Dark Canvas Theme */
       --gh-canvas: #010409;
       --gh-border: rgba(255, 255, 255, 0.08);
       --gh-border-bright: rgba(255, 255, 255, 0.15);
@@ -29,7 +29,7 @@
       --gh-text-muted: #848d97;
       --gh-link: #2f81f7;
       
-      /* Windows 11 Acrylic Blur Navigation Backgrounds */
+      /* Acrylic Blur Navigation Backgrounds */
       --win-blur-bg: rgba(0, 0, 0, 0.75);
       
       /* Subject Accent Colors */
@@ -143,7 +143,7 @@
       .cursor-dot, .cursor-ring { display: none; }
     }
 
-    /* ── CUSTOM GITHUB SCROLLBAR ── */
+    /* ── CUSTOM SCROLLBAR ── */
     ::-webkit-scrollbar {
       width: 10px;
       height: 10px;
@@ -171,7 +171,7 @@
       scroll-behavior: smooth;
     }
 
-    /* ── STICKY WINDOWS 11 ACRYLIC BLUR HEADER ── */
+    /* ── STICKY ACRYLIC BLUR HEADER ── */
     .gh-header {
       background-color: var(--win-blur-bg);
       backdrop-filter: blur(24px);
@@ -531,25 +531,25 @@
   <nav class="gh-sub-nav">
     <button class="gh-tab" 
             data-color="var(--maths)" 
-            onclick="loadSubject('CombinedMaths_Master.html', this)">
+            onclick="loadSubject('src/components/CombinedMaths_Master.html', this)">
       <span class="gh-dot"></span> Combined Maths
     </button>
 
     <button class="gh-tab" 
             data-color="var(--physics)" 
-            onclick="loadSubject('Physics_Master.html', this)">
+            onclick="loadSubject('src/components/Physics_Master.html', this)">
       <span class="gh-dot"></span> Physics
     </button>
 
     <button class="gh-tab" 
             data-color="var(--ict)" 
-            onclick="loadSubject('Information_Technology.html', this)">
+            onclick="loadSubject('src/components/Information_Technology.html', this)">
       <span class="gh-dot"></span> Information Technology
     </button>
 
     <button class="gh-tab" 
             data-color="var(--chemistry)" 
-            onclick="loadSubject('Chemistry_Master.html', this)">
+            onclick="loadSubject('src/components/Chemistry_Master.html', this)">
       <span class="gh-dot"></span> Chemistry
     </button>
   </nav>
@@ -575,7 +575,7 @@
         <ul class="footer-links">
           <li><a href="#" onclick="alert('System Status: Compilation scripts operational. Buffer memory stable.'); return false;">Telemetry</a></li>
           <li><a href="#" onclick="alert('Physical Constants Reference:\n• c = 2.998 × 10⁸ m/s\n• h = 6.626 × 10⁻³⁴ J·s\n• N_A = 6.022 × 10²³ mol⁻¹'); return false;">Constants</a></li>
-          <li><a href="https://github.com/DahamSathmina/al_maths_stream_study_portal" target="_blank">Docs</a></li>
+          <li><a href="https://github.com/dahamsathmina/al_maths_stream_study_portal" target="_blank">Docs</a></li>
         </ul>
         <button class="back-to-top-btn" onclick="scrollToTop()">
           <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M3.22 10.97a.75.75 0 0 1 1.06 0L8 7.22l3.72 3.75a.751.751 0 0 1 1.042-.018.751.751 0 0 1 .018 1.042l-4.25 4.25a.75.75 0 0 1-1.06 0L3.22 12.03a.75.75 0 0 1 0-1.06Z" transform="rotate(180 8 8)"/></svg>
