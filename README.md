@@ -9,7 +9,6 @@ This platform brings together resources, subject guides, notes, and references f
 
 **Live Website:** [al_maths_stream_study_portal](https://dahamsathmina.github.io/al_maths_stream_study_portal/)
 
----
 
 ##  Key Subjects Covered
 
@@ -18,7 +17,6 @@ This platform brings together resources, subject guides, notes, and references f
 -  **Information Technology (IT)**
 -  **Chemistry**
 
----
 
 ##  Features
 
@@ -27,13 +25,21 @@ This platform brings together resources, subject guides, notes, and references f
 - **Fast & Responsive:** Built for web access across smartphones, tablets, and desktop computers.
 - **Open Source & Free:** Free to use, share, and contribute to benefit fellow A/L students.
 
----
 
 ## 📂 Repository Structure
 
 ```text
 al_maths_stream_study_portal/
-├── src/             # Source files (styles, scripts, assets)
-├── index.html       # Landing page entry point
-├── LICENSE          # Open-source license (MIT)
-└── README.md        # Repository documentation
+├── src/                          # Main source files
+│   ├── assets/                   # Images and static visual assets
+│   │   ├── ODSDLabs_Dark_Original_Icon.png
+│   │   └── ODSDLabs_Original_Icon.png
+│   └── components/               # Subject page templates/components
+│       ├── Chemistry.html
+│       ├── CombinedMaths_Master.html
+│       ├── Information_Technology.html
+│       └── Physics_Master.html
+├── .gitignore                    # Git ignore file configuration
+├── index.html                    # Root entry point page
+├── LICENSE                       # Project license info
+└── README.md                     # Project documentation
