@@ -20,9 +20,9 @@ This platform brings together resources, subject guides, notes, and references f
 
 ---
 
-## ✨ Features
+##  Features
 
-- **Centralized Learning Resources:** Easily access study notes, formulas, past paper references, and revision materials.
+- **Centralized Learning Resources:** Easily access study notes and formulas.
 - **Structured Categories:** Organized by subject and module to help you find specific topics quickly.
 - **Fast & Responsive:** Built for web access across smartphones, tablets, and desktop computers.
 - **Open Source & Free:** Free to use, share, and contribute to benefit fellow A/L students.
