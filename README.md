@@ -35,10 +35,10 @@ al_maths_stream_study_portal/
 │   │   ├── ODSDLabs_Dark_Original_Icon.png
 │   │   └── ODSDLabs_Original_Icon.png
 │   └── components/               # Subject page templates/components
-│       ├── Chemistry.html
 │       ├── CombinedMaths_Master.html
+│       ├── Physics_Master.html
 │       ├── Information_Technology.html
-│       └── Physics_Master.html
+│       └── Chemistry.html
 ├── .gitignore                    # Git ignore file configuration
 ├── index.html                    # Root entry point page
 ├── LICENSE                       # Project license info
