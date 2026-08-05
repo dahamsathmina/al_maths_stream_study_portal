@@ -1,7 +1,6 @@
-# G.C.E. A/L Maths Stream Study Portal
+### G.C.E. A/L Maths Stream Study Portal
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=github)](https://dahamsathmina.github.io/al_maths_stream_study_portal/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
 A comprehensive reference portal and study repository designed specifically for Sri Lankan **G.C.E. Advanced Level (A/L)** students in the **Maths / Physical Science Stream**. 
 
@@ -10,7 +9,7 @@ This platform brings together resources, subject guides, notes, and references f
 **Live Website:** [al_maths_stream_study_portal](https://dahamsathmina.github.io/al_maths_stream_study_portal/)
 
 
-##  Key Subjects Covered
+####  Key Subjects Covered
 
 -  **Combined Mathematics** (Pure & Applied Mathematics)
 -  **Physics**
@@ -18,7 +17,7 @@ This platform brings together resources, subject guides, notes, and references f
 -  **Chemistry**
 
 
-##  Features
+####  Features
 
 - **Centralized Learning Resources:** Easily access study notes and formulas.
 - **Structured Categories:** Organized by subject and module to help you find specific topics quickly.
@@ -26,7 +25,7 @@ This platform brings together resources, subject guides, notes, and references f
 - **Open Source & Free:** Free to use, share, and contribute to benefit fellow A/L students.
 
 
-## 📂 Repository Structure
+#### Repository Structure
 
 ```text
 al_maths_stream_study_portal/
@@ -43,3 +42,5 @@ al_maths_stream_study_portal/
 ├── index.html                    # Root entry point page
 ├── LICENSE                       # Project license info
 └── README.md                     # Project documentation
+
+```
